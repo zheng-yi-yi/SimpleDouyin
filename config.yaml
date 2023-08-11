@@ -1,0 +1,25 @@
+# 服务器配置
+server:
+  # 服务器端口
+  port: 8080
+  # 数据库类型
+  db_type: mysql
+  # 数据库主机
+  host: 127.0.0.1
+
+# MySQL数据库配置
+mysql:
+  # MySQL主机
+  host: 127.0.0.1
+  # MySQL端口
+  port: 3306
+  # 填入你的 MySQL用户名（如 root）
+  username: 
+  # 填入密码
+  password: 
+  # 数据库字符集
+  charset: utf8mb4
+  # 数据库表前缀
+  prefix: dy_
+  # 数据库名称
+  db_name: douyin
