@@ -15,7 +15,7 @@
 ![GitHub forks](https://img.shields.io/github/forks/zheng-yi-yi/SimpleDouyin?style=flat-square&logo=github&logoColor=lightseagreen)
 ![GitHub contributors](https://img.shields.io/github/contributors/zheng-yi-yi/SimpleDouyin?style=flat-square&logo=github&logoColor=slateblue)
 
-<strong>简体中文</strong> | [English](README_en.md)
+<strong>简体中文</strong> | [English](README_EN.md)
 
 
 </div>
