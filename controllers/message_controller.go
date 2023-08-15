@@ -4,16 +4,10 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"sync/atomic"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/zheng-yi-yi/simpledouyin/models"
 )
-
-var tempChat = map[string][]models.Message{}
-
-var messageIdSequence = int64(1)
 
 type ChatResponse struct {
 	Response
@@ -24,26 +18,21 @@ type ChatResponse struct {
 func MessageAction(c *gin.Context) {
 	token := c.Query("token")
 	toUserId := c.Query("to_user_id")
+	actionType := c.Query("action_type")
 	content := c.Query("content")
 
+	if actionType != "1" {
+		c.JSON(http.StatusBadRequest, Response{StatusCode: 0, StatusMsg: "action_type不合法"})
+	}
 	if user, exist := UsersLoginInfo[token]; exist {
 		userIdB, _ := strconv.Atoi(toUserId)
-		chatKey := genChatKey(int64(user.ID), int64(userIdB))
-		atomic.AddInt64(&messageIdSequence, 1)
-		curMessage := models.Message{
-			Id:         messageIdSequence,
-			Content:    content,
-			CreateTime: time.Now().Format(time.Kitchen),
-		}
-
-		if messages, exist := tempChat[chatKey]; exist {
-			tempChat[chatKey] = append(messages, curMessage)
-		} else {
-			tempChat[chatKey] = []models.Message{curMessage}
+		err := messageService.AddMessage(user.ID, uint(userIdB), content)
+		if err != nil {
+			c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "消息发送失败"})
 		}
 		c.JSON(http.StatusOK, Response{StatusCode: 0})
 	} else {
-		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
+		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "用户不存在"})
 	}
 }
 
@@ -51,6 +40,7 @@ func MessageAction(c *gin.Context) {
 func MessageChat(c *gin.Context) {
 	token := c.Query("token")
 	toUserId := c.Query("to_user_id")
+	// preMsgTime := c.Query("pre_msg_time")
 
 	if user, exist := UsersLoginInfo[token]; exist {
 		userIdB, _ := strconv.Atoi(toUserId)
