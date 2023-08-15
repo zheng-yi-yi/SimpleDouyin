@@ -14,9 +14,9 @@ mysql:
   # MySQL端口
   port: 3306
   # 填入你的 MySQL用户名（如 root）
-  username: 
+  username: root
   # 填入密码
-  password: 
+  password: 123456
   # 数据库字符集
   charset: utf8mb4
   # 数据库表前缀

@@ -1,6 +1,6 @@
 package config
 
-const Ip_address = "xxx.xxx.xxx.xxx" // （填入本机 IP 地址）
+const Ip_address = "192.168.3.221" // （填入本机 IP 地址）
 
 const Video_quantity_limit = 30 // 每次获取视频流的数量
 
