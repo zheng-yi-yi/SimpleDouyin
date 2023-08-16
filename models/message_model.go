@@ -1,18 +1,14 @@
 package models
 
+import (
+	"time"
+)
+
+// @Description: 消息模型
 type Message struct {
-	Id         int64  `json:"id,omitempty"`
-	Content    string `json:"content,omitempty"`
-	CreateTime string `json:"create_time,omitempty"`
-}
-
-type MessageSendEvent struct {
-	UserId     int64  `json:"user_id,omitempty"`
-	ToUserId   int64  `json:"to_user_id,omitempty"`
-	MsgContent string `json:"msg_content,omitempty"`
-}
-
-type MessagePushEvent struct {
-	FromUserId int64  `json:"user_id,omitempty"`
-	MsgContent string `json:"msg_content,omitempty"`
+	ID         uint      `json:"id" gorm:"primaryKey comment:消息id"`
+	FromUserID uint      `json:"from_user_id" gorm:"not null comment:消息发送者id"`
+	ToUserID   uint      `json:"to_user_id" gorm:"not null comment:消息接收者id"`
+	Content    string    `json:"content" gorm:"not null comment:消息内容"`
+	CreateTime time.Time `json:"create_time" gorm:"not null comment:消息发送时间"`
 }

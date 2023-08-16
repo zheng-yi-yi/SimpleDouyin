@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -44,17 +43,9 @@ func MessageChat(c *gin.Context) {
 
 	if user, exist := UsersLoginInfo[token]; exist {
 		userIdB, _ := strconv.Atoi(toUserId)
-		chatKey := genChatKey(int64(user.ID), int64(userIdB))
-
-		c.JSON(http.StatusOK, ChatResponse{Response: Response{StatusCode: 0}, MessageList: tempChat[chatKey]})
+		messageList, _ := messageService.MessageList(user.ID, uint(userIdB))
+		c.JSON(http.StatusOK, ChatResponse{Response: Response{StatusCode: 0}, MessageList: messageList})
 	} else {
 		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 	}
-}
-
-func genChatKey(userIdA int64, userIdB int64) string {
-	if userIdA > userIdB {
-		return fmt.Sprintf("%d_%d", userIdB, userIdA)
-	}
-	return fmt.Sprintf("%d_%d", userIdA, userIdB)
 }
