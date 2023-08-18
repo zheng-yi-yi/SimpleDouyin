@@ -66,7 +66,6 @@ func CreateTable(db *gorm.DB) error {
 		models.Favorite{},
 		models.Comment{},
 		models.Relation{},
-		models.Message{},
 	)
 	if err != nil {
 		return err
