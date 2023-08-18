@@ -13,6 +13,7 @@ var (
 	videoService    services.VideoService
 	favoriteService services.FavoriteService
 	relationService services.RelationService
+	messageService  services.MessageService
 )
 
 // ================= 响应 =================
