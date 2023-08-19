@@ -14,6 +14,7 @@ var (
 	favoriteService services.FavoriteService
 	relationService services.RelationService
 	messageService  services.MessageService
+	commentService services.CommentService
 )
 
 // ================= 响应 =================
