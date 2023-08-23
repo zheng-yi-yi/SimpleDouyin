@@ -22,8 +22,17 @@ func (userService *UserService) Register(username, password string) (models.User
 		return models.User{}, errors.New("用户名已注册")
 	}
 	user = models.User{
-		UserName: username,
-		PassWord: password,
+		UserName:        username,
+		PassWord:        password,
+		Status:          0,
+		FollowCount:     0,
+		FollowerCount:   0,
+		FavoriteCount:   0,
+		Avatar:          config.AvatarURL,
+		BackgroundImage: config.BackgroundURL,
+		Signature:       config.SignatureStr,
+		TotalFavorited:  "0",
+		WorkCount:       0,
 	}
 	err = config.DB.Create(&user).Error
 	if err != nil {
