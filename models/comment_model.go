@@ -1,14 +1,15 @@
 package models
 
-import "gorm.io/gorm"
+import "time"
 
 //  @Description: 评论表
 type Comment struct {
-	gorm.Model
-	Content  string `json:"content,omitempty"    gorm:"type:text; not null; comment:评论内容"`
-	VideoId  uint   `json:"video_id,omitempty"   gorm:"type:int; not null; comment:评论所属视频ID"`
-	ToUserId uint   `json:"to_user_id,omitempty" gorm:"type:int; comment:评论回复用户ID"`
-	UserId   uint   `json:"user_id,omitempty"    gorm:"type:int; not null; comment:评论所属用户ID"`
-	User     User   `json:"user,omitempty"       gorm:"foreignKey:UserId; references:ID; comment:评论所属用户"`
-	Video    Video  `json:"video,omitempty"      gorm:"foreignKey:VideoId; references:ID; comment:评论所属视频"`
+	ID        uint      `json:"id"                    gorm:"primarykey;autoIncrement"`
+	UserId    uint      `json:"user_id,omitempty"     gorm:"not null; comment:评论所属用户ID"`
+	VideoId   uint      `json:"video_id,omitempty"    gorm:"not null; comment:评论所属视频ID"`
+	Content   string    `json:"content,omitempty"     gorm:"not null; comment:评论内容"`
+	ToUserId  uint      `json:"to_user_id,omitempty"  gorm:"not null; comment:发布评论用户ID"`
+	CreatedAt time.Time `json:"create_date,omitempty" gorm:"not null; comment:评论发布日期"`
+	User      User      `json:"user,omitempty"        gorm:"foreignKey:UserId; references:ID; comment:评论所属用户"`
+	Video     Video     `json:"video,omitempty"       gorm:"foreignKey:VideoId; references:ID; comment:评论所属视频"`
 }
