@@ -42,9 +42,9 @@ func FollowList(c *gin.Context) {
 			FollowerCount:   int64(user.FollowerCount),
 			IsFollow:        isFollow,
 			BackgroundImage: config.BackgroundURL,
-			TotalFavorited:  1,
-			WorkCount:       1,
-			FavoriteCount:   1,
+			TotalFavorited:  user.TotalFavorited,
+			WorkCount:       user.WorkCount,
+			FavoriteCount:   user.FavoriteCount,
 		}
 		relationUsers = append(relationUsers, relationUser)
 	}
