@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/zheng-yi-yi/simpledouyin/config"
 )
 
 // 获取用户发布视频列表的处理函数
@@ -52,8 +53,8 @@ func PublishList(c *gin.Context) {
 				WorkCount:      userPublishList[i].User.WorkCount,
 				FavoriteCount:  userPublishList[i].User.FavoriteCount,
 			},
-			PlayUrl:       userPublishList[i].PlayUrl,
-			CoverUrl:      userPublishList[i].CoverUrl,
+			PlayUrl:       config.ResourceServerURL + userPublishList[i].PlayUrl,
+			CoverUrl:      config.ResourceServerURL + userPublishList[i].CoverUrl,
 			FavoriteCount: userPublishList[i].FavoriteCount,
 			CommentCount:  userPublishList[i].CommentCount,
 			IsFavorite:    false,

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/zheng-yi-yi/simpledouyin/config"
 	"github.com/zheng-yi-yi/simpledouyin/utils"
 )
 
@@ -44,8 +45,8 @@ func Feed(c *gin.Context) {
 					WorkCount:      video.User.WorkCount,
 					FavoriteCount:  video.User.FavoriteCount,
 				},
-				PlayUrl:       video.PlayUrl,
-				CoverUrl:      video.CoverUrl,
+				PlayUrl:       config.ResourceServerURL + video.PlayUrl,
+				CoverUrl:      config.ResourceServerURL + video.CoverUrl,
 				FavoriteCount: video.FavoriteCount,
 				CommentCount:  video.CommentCount,
 				IsFavorite:    IsFavorite(userId, video.ID),
