@@ -33,7 +33,4 @@ type Conf struct {
 	Server *ServerConfig // ServerConfig 结构体定义了一些服务器配置的信息。
 }
 
-const ResourceServerURL = "http://" + Ip_address + ":8080/public/"                    // 服务端地址
-const AvatarURL = "http://" + Ip_address + ":8080/public/Initdata/initavater.jpg"     // 默认头像地址
-const BackgroundURL = "http://" + Ip_address + ":8080/public/Initdata/background.jpg" // 默认背景图地址
-const SignatureStr = "这个人很懒，什么也没有留下..."                                               // 默认简介内容
+const ResourceServerURL = "http://" + Ip_address + ":8080/public/" // 服务端地址
