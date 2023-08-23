@@ -6,6 +6,8 @@ const Video_quantity_limit = 30 // 每次获取视频流的数量
 
 const DateTime = "2006-01-02 15:04:05" // 固定的时间格式
 
+const ResourceServerURL = "http://" + Ip_address + ":8080/public/" // 服务端地址
+
 // MysqlConfig 用于存储 MySQL 数据库的配置信息
 type MysqlConfig struct {
 	Host     string `json:"host" yaml:"host"`               // 主机
@@ -32,5 +34,3 @@ type Conf struct {
 	Mysql  *MysqlConfig  // MysqlConfig 结构体定义了 MySQL 数据库的配置信息
 	Server *ServerConfig // ServerConfig 结构体定义了一些服务器配置的信息。
 }
-
-const ResourceServerURL = "http://" + Ip_address + ":8080/public/" // 服务端地址

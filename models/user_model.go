@@ -12,7 +12,7 @@ type User struct {
 	Avatar          string    `json:"avatar,omitempty"           gorm:"not null; comment:用户头像"`
 	BackgroundImage string    `json:"background_image,omitempty" gorm:"not null; comment:用户个人页顶部大图"`
 	Signature       string    `json:"signature,omitempty"        gorm:"not null; comment:个人简介"`
-	TotalFavorited  string    `json:"total_favorited,omitempty"  gorm:"not null; comment:获赞数量"`
+	TotalFavorited  int64     `json:"total_favorited,omitempty"  gorm:"not null; comment:获赞数量"`
 	WorkCount       int64     `json:"work_count,omitempty"       gorm:"not null; comment:作品数"`
 	Video           []Video   `gorm:"foreignKey:UserId"`
 	Comment         []Comment `gorm:"foreignKey:UserId"`
