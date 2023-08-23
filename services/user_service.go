@@ -17,7 +17,7 @@ func (userService *UserService) Register(username, password string) (models.User
 		return models.User{}, errors.New("密码长度不能小于5")
 	}
 	var user models.User
-	err := config.DB.Where("username = ?", username).First(&user).Error
+	err := config.DB.Where("user_name = ?", username).First(&user).Error
 	if err == nil {
 		return models.User{}, errors.New("用户名已注册")
 	}
@@ -35,7 +35,7 @@ func (userService *UserService) Register(username, password string) (models.User
 // 用户登录服务
 func (userService *UserService) Login(username, password string) (models.User, error) {
 	var user models.User
-	err := config.DB.Where("username = ? AND password = ?", username, password).First(&user).Error
+	err := config.DB.Where("user_name = ? AND pass_word = ?", username, password).First(&user).Error
 	if err == gorm.ErrRecordNotFound {
 		return models.User{}, errors.New("用户名或密码错误")
 	} else if err != nil {
