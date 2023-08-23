@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/zheng-yi-yi/simpledouyin/config"
 )
 
 // 获取用户发布视频列表的处理函数
@@ -41,14 +40,20 @@ func PublishList(c *gin.Context) {
 		videoList = append(videoList, Video{
 			Id: int64(userPublishList[i].ID),
 			Author: User{
-				Id:            int64(userPublishList[i].User.ID),
-				Name:          userPublishList[i].User.UserName,
-				FollowCount:   0,
-				FollowerCount: 0,
-				IsFollow:      false,
+				Id:             int64(userPublishList[i].User.ID),
+				Name:           userPublishList[i].User.UserName,
+				FollowCount:    int64(userPublishList[i].User.FollowCount),
+				FollowerCount:  int64(userPublishList[i].User.FollowerCount),
+				IsFollow:       false,
+				Avatar:         userPublishList[i].User.Avatar,
+				Background:     userPublishList[i].User.BackgroundImage,
+				Signature:      userPublishList[i].User.Signature,
+				TotalFavorited: userPublishList[i].User.TotalFavorited,
+				WorkCount:      userPublishList[i].User.WorkCount,
+				FavoriteCount:  userPublishList[i].User.FavoriteCount,
 			},
-			PlayUrl:       config.ResourceServerURL + userPublishList[i].PlayUrl,
-			CoverUrl:      config.ResourceServerURL + userPublishList[i].CoverUrl,
+			PlayUrl:       userPublishList[i].PlayUrl,
+			CoverUrl:      userPublishList[i].CoverUrl,
 			FavoriteCount: userPublishList[i].FavoriteCount,
 			CommentCount:  userPublishList[i].CommentCount,
 			IsFavorite:    false,
