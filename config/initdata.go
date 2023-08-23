@@ -34,7 +34,7 @@ func CreateTable(db *gorm.DB) error {
 			Avatar:          User1_avater,     // 用户头像
 			BackgroundImage: User1_background, // 用户个人页顶部大图
 			Signature:       User1_signature,  // 个人简介
-			TotalFavorited:  6,                // 获赞数量（共获6个赞）
+			TotalFavorited:  "6",              // 获赞数量（共获6个赞）
 			WorkCount:       3,                // 作品数（发布了三个作品：1、3、6）
 		}
 		db.Create(&user1)
@@ -48,7 +48,7 @@ func CreateTable(db *gorm.DB) error {
 			Avatar:          User2_avater,     // 用户头像
 			BackgroundImage: User2_background, // 用户个人页顶部大图
 			Signature:       User2_signature,  // 个人简介
-			TotalFavorited:  4,                // 获赞数量（共获4个赞）
+			TotalFavorited:  "4",              // 获赞数量（共获4个赞）
 			WorkCount:       2,                // 作品数（发布了两个作品:2、4）
 		}
 		db.Create(&user2)
@@ -62,7 +62,7 @@ func CreateTable(db *gorm.DB) error {
 			Avatar:          User3_avater,     // 用户头像
 			BackgroundImage: User3_background, // 用户个人页顶部大图
 			Signature:       User3_signature,  // 个人简介
-			TotalFavorited:  2,                // 获赞数量（共获2个赞）
+			TotalFavorited:  "2",              // 获赞数量（共获2个赞）
 			WorkCount:       3,                // 作品数（发布了一个作品：5）
 		}
 		db.Create(&user3)
