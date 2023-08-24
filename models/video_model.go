@@ -29,3 +29,8 @@ func GetVideoCount(db *gorm.DB, userId uint) (int64, error) {
 	}
 	return videoCount, nil
 }
+
+// IncrementWorkCount 增加用户的作品数。
+func IncrementWorkCount(db *gorm.DB, userID uint) error {
+	return db.Model(&User{}).Where("id = ?", userID).Update("work_count", gorm.Expr("work_count + ?", 1)).Error
+}
