@@ -126,12 +126,12 @@ func CreateTable(db *gorm.DB) error {
 	db.Model(&models.Relation{}).Count(&count_Relation)
 	if count_Relation == 0 {
 		relation := []*models.Relation{
-			{FromUserId: 1, ToUserId: 2, IsMutual: 1, Cancel: 0},
-			{FromUserId: 1, ToUserId: 3, IsMutual: 1, Cancel: 0},
-			{FromUserId: 2, ToUserId: 1, IsMutual: 1, Cancel: 0},
-			{FromUserId: 2, ToUserId: 3, IsMutual: 1, Cancel: 0},
-			{FromUserId: 3, ToUserId: 1, IsMutual: 1, Cancel: 0},
-			{FromUserId: 3, ToUserId: 2, IsMutual: 1, Cancel: 0},
+			{FromUserId: 1, ToUserId: 2, Cancel: 0},
+			{FromUserId: 1, ToUserId: 3, Cancel: 0},
+			{FromUserId: 2, ToUserId: 1, Cancel: 0},
+			{FromUserId: 2, ToUserId: 3, Cancel: 0},
+			{FromUserId: 3, ToUserId: 1, Cancel: 0},
+			{FromUserId: 3, ToUserId: 2, Cancel: 0},
 		}
 		db.Create(&relation)
 	}
