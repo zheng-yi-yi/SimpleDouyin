@@ -38,3 +38,12 @@ func IncrementCommentCount(db *gorm.DB, videoID uint) error {
 	}
 	return nil
 }
+
+// DecreaseCommentCount 减少指定视频的评论数（减一）
+func DecreaseCommentCount(db *gorm.DB, videoID uint) error {
+	result := db.Model(&Video{}).Where("id = ?", videoID).UpdateColumn("comment_count", gorm.Expr("comment_count - ?", 1))
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
