@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"github.com/zheng-yi-yi/simpledouyin/config"
+	"github.com/zheng-yi-yi/simpledouyin/models"
 	"github.com/zheng-yi-yi/simpledouyin/utils"
 )
 
@@ -50,8 +52,13 @@ func Publish(c *gin.Context) {
 	// 创建视频记录
 	if _, createVideoErr := videoService.Create(videoDst, coverDst, title, userId); createVideoErr != nil {
 		fmt.Println(createVideoErr.Error())
-		Failed(c, "数据保存失败")
+		Failed(c, "数据保存失败...")
 		return
+	}
+	// 成功创建视频后，调用 IncrementWorkCount 函数
+	if err := models.IncrementWorkCount(config.DB, userId); err != nil {
+		fmt.Println(err.Error())
+		Failed(c, "用户作品数添加失败...")
 	}
 	// 返回一个成功的响应
 	Success(c, "视频发布成功")

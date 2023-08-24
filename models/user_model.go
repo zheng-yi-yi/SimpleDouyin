@@ -1,5 +1,7 @@
 package models
 
+import "gorm.io/gorm"
+
 //  @Description: 用户模型
 type User struct {
 	ID              uint      `json:"id"                         gorm:"primarykey"`
@@ -16,4 +18,9 @@ type User struct {
 	WorkCount       int64     `json:"work_count,omitempty"       gorm:"not null; comment:作品数"`
 	Video           []Video   `gorm:"foreignKey:UserId"`
 	Comment         []Comment `gorm:"foreignKey:UserId"`
+}
+
+// IncrementWorkCount 增加用户的作品数。
+func IncrementWorkCount(db *gorm.DB, userID uint) error {
+	return db.Model(&User{}).Where("id = ?", userID).Update("work_count", gorm.Expr("work_count + ?", 1)).Error
 }
