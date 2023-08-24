@@ -36,6 +36,16 @@ func GetVideoPath(file *multipart.FileHeader, userId uint) string {
 	return videoPath
 }
 
+// GetCoverDst 根据文件信息和用户ID生成封面图片文件的目标路径。
+func GetCoverDst(file *multipart.FileHeader, userId uint) string {
+	coverName := GetCoverName(userId)
+	if coverName == "" {
+		return ""
+	}
+	coverDst := filepath.Join("./public/images/", coverName)
+	return coverDst
+}
+
 // GetVideoName 根据userId_用户发布的视频数量+1
 func GetVideoName(userId uint) string {
 	VideoCount, err := models.GetVideoCount(config.DB, userId)
