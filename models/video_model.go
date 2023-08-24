@@ -29,3 +29,12 @@ func GetVideoCount(db *gorm.DB, userId uint) (int64, error) {
 	}
 	return videoCount, nil
 }
+
+// IncrementCommentCount 增加指定视频的评论数（加一）
+func IncrementCommentCount(db *gorm.DB, videoID uint) error {
+	result := db.Model(&Video{}).Where("id = ?", videoID).UpdateColumn("comment_count", gorm.Expr("comment_count + ?", 1))
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
