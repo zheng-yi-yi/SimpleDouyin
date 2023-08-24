@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"strconv"
 	"time"
 
 	"github.com/zheng-yi-yi/simpledouyin/config"
@@ -28,15 +27,12 @@ func (s *CommentService) CreateComment(video_id uint, content string, user_id ui
 }
 
 // 获取所有未删除的评论
-func (s *CommentService) GetVideoComment(video_id string) ([]models.Comment, error) {
-
-	id, err := strconv.ParseInt(video_id, 10, 64)
-	var Comments *[]models.Comment
-	if err != nil {
-		return *Comments, errors.New("视频不存在")
+func (s *CommentService) GetVideoComment(video_id uint) ([]models.Comment, error) {
+	var commentList []models.Comment
+	if err := config.DB.Where("video_id=?", video_id).Find(&commentList).Error; err != nil {
+		return nil, err
 	}
-	config.DB.Where("video_id = ? AND deleted_at is NULL", uint(id)).Find(&Comments)
-	return *Comments, nil
+	return commentList, nil
 }
 
 // 根据相应的评论获取ID
