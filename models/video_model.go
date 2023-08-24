@@ -1,8 +1,12 @@
 package models
 
-import "time"
+import (
+	"time"
 
-//  @Description: 视频表
+	"gorm.io/gorm"
+)
+
+// @Description: 视频表
 type Video struct {
 	ID            uint   `json:"id"                       gorm:"primarykey"`
 	UserId        uint   `json:"user_id,omitempty"        gorm:"type: int; not null; comment:作者ID"`
@@ -14,4 +18,14 @@ type Video struct {
 	IsFavorite    bool   `json:"is_favorite"              gorm:"-"`
 	User          User   `json:"author,omitempty"         gorm:"foreignKey:UserId; references:ID; comment:视频作者信息"`
 	CreatedAt     time.Time
+}
+
+// GetVideoCount 根据用户ID查询其拥有的视频数量。
+func GetVideoCount(db *gorm.DB, userId uint) (int64, error) {
+	var videoCount int64
+	result := db.Model(&Video{}).Where("user_id = ?", userId).Count(&videoCount)
+	if result.Error != nil {
+		return 0, result.Error
+	}
+	return videoCount, nil
 }
