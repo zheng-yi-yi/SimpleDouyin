@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 	"github.com/zheng-yi-yi/simpledouyin/config"
@@ -47,10 +48,12 @@ func Publish(c *gin.Context) {
 		Failed(c, "视频封面生成失败...")
 		return
 	}
-	// 获取封面图片目标路径
-	coverDst := utils.GetCoverDst(file, userId)
+	// 生成 playUrl 与 coverUrl
+	fileExt := filepath.Ext(file.Filename)
+	playUrl := "videos/" + utils.GetVideoName(userId) + fileExt
+	coverUrl := "images/" + utils.GetCoverName(userId)
 	// 创建视频记录
-	if _, createVideoErr := videoService.Create(videoDst, coverDst, title, userId); createVideoErr != nil {
+	if _, createVideoErr := videoService.Create(playUrl, coverUrl, title, userId); createVideoErr != nil {
 		fmt.Println(createVideoErr.Error())
 		Failed(c, "数据保存失败...")
 		return
