@@ -106,18 +106,18 @@ func CreateTable(db *gorm.DB) error {
 	db.Model(&models.Comment{}).Count(&count_Comment)
 	if count_Comment == 0 {
 		comment := []*models.Comment{
-			{UserId: 1, VideoId: 1, ToUserId: 2, CreatedAt: time.Now(), Cancel: 0, Content: "来学习了"},
-			{UserId: 1, VideoId: 1, ToUserId: 3, CreatedAt: time.Now(), Cancel: 0, Content: "真不错！"},
-			{UserId: 2, VideoId: 2, ToUserId: 1, CreatedAt: time.Now(), Cancel: 0, Content: "为天地立心，为生民立命，为往圣继绝学，为万世开太平"},
-			{UserId: 2, VideoId: 2, ToUserId: 3, CreatedAt: time.Now(), Cancel: 0, Content: "落霞与孤鹜齐飞，秋水共长天一色。"},
-			{UserId: 1, VideoId: 3, ToUserId: 2, CreatedAt: time.Now(), Cancel: 0, Content: "变装那一瞬间好高级"},
-			{UserId: 1, VideoId: 3, ToUserId: 3, CreatedAt: time.Now(), Cancel: 0, Content: "汉服美"},
-			{UserId: 2, VideoId: 4, ToUserId: 1, CreatedAt: time.Now(), Cancel: 0, Content: "我对着日落许愿，希望你永远快乐"},
-			{UserId: 2, VideoId: 4, ToUserId: 3, CreatedAt: time.Now(), Cancel: 0, Content: "夕阳洒在世界的尽头"},
-			{UserId: 3, VideoId: 5, ToUserId: 1, CreatedAt: time.Now(), Cancel: 0, Content: "年少的梦终将绽放于盛夏，解放之鼓必将响彻整个夏天"},
-			{UserId: 3, VideoId: 5, ToUserId: 2, CreatedAt: time.Now(), Cancel: 0, Content: "啧，怎么说呢......"},
-			{UserId: 1, VideoId: 6, ToUserId: 2, CreatedAt: time.Now(), Cancel: 0, Content: "说走就走的旅行..."},
-			{UserId: 1, VideoId: 6, ToUserId: 3, CreatedAt: time.Now(), Cancel: 0, Content: "这首歌好像在哪里听过！"},
+			{UserId: 2, VideoId: 1, CreatedAt: time.Now(), Cancel: 0, Content: "来学习了"},
+			{UserId: 3, VideoId: 1, CreatedAt: time.Now(), Cancel: 0, Content: "真不错！"},
+			{UserId: 1, VideoId: 2, CreatedAt: time.Now(), Cancel: 0, Content: "为天地立心，为生民立命，为往圣继绝学，为万世开太平"},
+			{UserId: 3, VideoId: 2, CreatedAt: time.Now(), Cancel: 0, Content: "落霞与孤鹜齐飞，秋水共长天一色。"},
+			{UserId: 2, VideoId: 3, CreatedAt: time.Now(), Cancel: 0, Content: "变装那一瞬间好高级"},
+			{UserId: 3, VideoId: 3, CreatedAt: time.Now(), Cancel: 0, Content: "汉服美"},
+			{UserId: 1, VideoId: 4, CreatedAt: time.Now(), Cancel: 0, Content: "我对着日落许愿，希望你永远快乐"},
+			{UserId: 3, VideoId: 4, CreatedAt: time.Now(), Cancel: 0, Content: "夕阳洒在世界的尽头"},
+			{UserId: 1, VideoId: 5, CreatedAt: time.Now(), Cancel: 0, Content: "年少的梦终将绽放于盛夏，解放之鼓必将响彻整个夏天"},
+			{UserId: 2, VideoId: 5, CreatedAt: time.Now(), Cancel: 0, Content: "啧，怎么说呢......"},
+			{UserId: 2, VideoId: 6, CreatedAt: time.Now(), Cancel: 0, Content: "说走就走的旅行..."},
+			{UserId: 3, VideoId: 6, CreatedAt: time.Now(), Cancel: 0, Content: "这首歌好像在哪里听过！"},
 		}
 		db.Create(&comment)
 	}
