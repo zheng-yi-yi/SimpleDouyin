@@ -46,6 +46,19 @@ func GetCoverDst(file *multipart.FileHeader, userId uint) string {
 	return coverDst
 }
 
+// GetCoverPath 根据文件信息和用户ID生成封面图片文件的完整本地路径。
+func GetCoverPath(file *multipart.FileHeader, userId uint) string {
+	pwd, getPwdErr := os.Getwd()
+	if getPwdErr != nil {
+		fmt.Println(getPwdErr.Error())
+		return ""
+	}
+	parentDir := filepath.Dir(pwd)
+	coverDst := GetCoverDst(file, userId)
+	coverPath := filepath.Join(parentDir, coverDst)
+	return coverPath
+}
+
 // GetVideoName 根据userId_用户发布的视频数量+1
 func GetVideoName(userId uint) string {
 	VideoCount, err := models.GetVideoCount(config.DB, userId)
