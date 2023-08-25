@@ -1,30 +1,35 @@
 package controllers
 
 import (
-	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-// 发送消息
+// MessageAction ，发送消息
 func MessageAction(c *gin.Context) {
-	token := c.Query("token")
-	toUserId := c.Query("to_user_id")
-	actionType := c.Query("action_type")
-	content := c.Query("content")
-
-	if actionType != "1" {
-		c.JSON(http.StatusBadRequest, Response{StatusCode: 0, StatusMsg: "action_type不合法"})
+	// 当前用户id
+	from_user_id := c.GetUint("userID")
+	if from_user_id == 0 {
+		Failed(c, "用户不存在")
+		return
 	}
-	if user, exist := UsersLoginInfo[token]; exist {
-		userIdB, _ := strconv.Atoi(toUserId)
-		err := messageService.AddMessage(user.ID, uint(userIdB), content)
-		if err != nil {
-			c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "消息发送失败"})
+	// 对方用户id
+	to_user_id, err := strconv.ParseInt(c.Query("to_user_id"), 10, 64)
+	if err != nil {
+		Failed(c, err.Error())
+		return
+	}
+	action_type := c.Query("action_type")
+	// 发送信息
+	if action_type == "1" {
+		content := c.Query("content") // 消息内容
+		if err := messageService.AddMessage(uint(from_user_id), content, uint(to_user_id)); err != nil {
+			Failed(c, err.Error())
+			return
 		}
-		c.JSON(http.StatusOK, Response{StatusCode: 0})
-	} else {
-		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "用户不存在"})
+		Success(c, "成功发送信息")
+		return
 	}
+	Failed(c, "消息发送失败")
 }
