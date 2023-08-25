@@ -117,3 +117,24 @@ func (s *RelationService) IsFollow(fromUserId uint, toUserId uint) bool {
 	}
 	return true
 }
+
+// 获取粉丝列表
+func (s *RelationService) GetFollowerList(userId uint) ([]models.User, error) {
+	// 通过relation表查询关注了该用户的所有用户Id
+	var relation []models.Relation
+	result := config.DB.Select("from_user_id").Where("to_user_id = ? AND cancel = ?", userId, 0).Find(&relation)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	var followerUserIds []uint64
+	for _, rel := range relation {
+		followerUserIds = append(followerUserIds, uint64(rel.FromUserId))
+	}
+	// 再通过users表返回粉丝的详细信息
+	var followers []models.User
+	result = config.DB.Where("id IN (?)", followerUserIds).Find(&followers)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return followers, nil
+}
