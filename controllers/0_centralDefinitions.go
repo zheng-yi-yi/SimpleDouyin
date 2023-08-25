@@ -10,13 +10,12 @@ import (
 
 // ================= Service =================
 var (
-	userService      services.UserService
-	videoService     services.VideoService
-	favoriteService  services.FavoriteService
-	relationService  services.RelationService
-	messageService   services.MessageService
-	commentService   services.CommentService
-	socializeService services.SocializeService
+	userService     services.UserService
+	videoService    services.VideoService
+	favoriteService services.FavoriteService
+	relationService services.RelationService
+	messageService  services.MessageService
+	commentService  services.CommentService
 )
 
 // ================= Response =================
