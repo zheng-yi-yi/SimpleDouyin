@@ -2,60 +2,44 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/zheng-yi-yi/simpledouyin/config"
-	"github.com/zheng-yi-yi/simpledouyin/models"
 )
 
-// FriendList 好友列表
+// FriendList 获取好友列表
 func FriendList(c *gin.Context) {
-	// 获取传递的 token
-	token := c.Query("token")
-
-	// 使用 GetUserFromToken 函数获取已登录用户的信息
-	user, exists := GetUserFromToken(token)
-	if !exists {
-		c.JSON(http.StatusUnauthorized, Response{StatusCode: 1, StatusMsg: "未登录或登录已过期"})
-		return
-	}
-
-	// 获取已登录用户的 ID
-	userID := user.ID
-
-	// 调用 socializeService.GetFriendsByUserID 通过用户ID获取好友列表
-	friends, err := socializeService.GetFriendsByUserID(userID)
+	userIdStr := c.Query("user_id")
+	userId, err := strconv.ParseUint(userIdStr, 10, 64)
 	if err != nil {
-		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: err.Error()})
+		Failed(c, err.Error())
 		return
 	}
-
-	// 构建返回的好友列表
-	var userList UserList
-	for _, friend := range friends {
-		userList = append(userList, User{
-			Id:            int64(friend.ID),
-			Name:          friend.UserName,
-			FollowCount:   int64(friend.FollowCount),
-			FollowerCount: int64(friend.FollowerCount),
-			IsFollow:      true, // 因为是好友关系，所以设置为 true
-			Avatar:        config.AvatarURL,
-			Background:    config.BackgroundURL,
-			Signature:     config.SignatureStr,
-		})
+	users, err := relationService.GetFriendsList(uint(userId))
+	if err != nil {
+		Failed(c, err.Error())
+		return
 	}
-
-	// 返回好友列表
-	c.JSON(http.StatusOK, gin.H{
-		"friends": userList,
+	var relationUsers []relationUser
+	for _, user := range users {
+		isFollow := relationService.IsFollow(uint(userId), user.ID)
+		relationUser := relationUser{
+			ID:              int64(user.ID),
+			Name:            user.UserName,
+			Avatar:          user.Avatar,
+			Signature:       user.Signature,
+			FollowCount:     int64(user.FollowCount),
+			FollowerCount:   int64(user.FollowCount),
+			IsFollow:        isFollow,
+			BackgroundImage: user.BackgroundImage,
+			TotalFavorited:  user.TotalFavorited,
+			WorkCount:       user.WorkCount,
+			FavoriteCount:   user.FavoriteCount,
+		}
+		relationUsers = append(relationUsers, relationUser)
+	}
+	c.JSON(http.StatusOK, UserListResponse{
+		Response: Response{StatusCode: 0},
+		UserList: relationUsers,
 	})
-}
-
-// GetUserFromToken 根据传递的 token 获取已登录用户的信息
-func GetUserFromToken(token string) (*models.User, bool) {
-	user, exists := UsersLoginInfo[token]
-	if !exists {
-		return nil, false
-	}
-	return &user, true
 }
