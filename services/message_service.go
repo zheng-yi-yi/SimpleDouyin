@@ -27,7 +27,17 @@ func (ms *MessageService) AddMessage(fromUserID uint, content string, toUserID u
 }
 
 func (MessageService *MessageService) MessageList(fromUserID, toUserID uint) ([]models.Message, error) {
-	message_list := make([]models.Message, 0)
-	config.DB.Where("from_user_id = ? AND to_user_id = ?", fromUserID, toUserID).Find(&message_list)
-	return message_list, nil
+	var messages []models.Message
+
+	// 查询消息记录
+	err := config.DB.Where("from_user_id = ? AND to_user_id = ?", fromUserID, toUserID).
+		Or("from_user_id = ? AND to_user_id = ?", toUserID, fromUserID).
+		Order("id").
+		Find(&messages).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return messages, nil
 }
