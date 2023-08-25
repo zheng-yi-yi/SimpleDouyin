@@ -138,3 +138,35 @@ func (s *RelationService) GetFollowerList(userId uint) ([]models.User, error) {
 	}
 	return followers, nil
 }
+
+// GetFriendsList 通过用户ID获取好友用户列表
+func (s *RelationService) GetFriendsList(userID uint) ([]models.User, error) {
+	// 通过relation表查询用户关注的好友
+	var relations []models.Relation
+	result := config.DB.Where("(from_user_id = ? OR to_user_id = ?) AND cancel = ?", userID, userID, 0).Find(&relations)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	friendUserIDs := make(map[uint]bool) // 使用 map 来存储好友的用户ID，避免重复
+	for _, rel := range relations {
+		if rel.FromUserId == userID {
+			friendUserIDs[rel.ToUserId] = true
+		} else {
+			friendUserIDs[rel.FromUserId] = true
+		}
+	}
+
+	// 获取好友用户的详细信息
+	var friendUserList []models.User
+	for friendID := range friendUserIDs {
+		var user models.User
+		result := config.DB.First(&user, friendID)
+		if result.Error != nil {
+			return nil, result.Error
+		}
+		friendUserList = append(friendUserList, user)
+	}
+
+	return friendUserList, nil
+}
