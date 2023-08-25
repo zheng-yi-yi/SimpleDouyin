@@ -127,7 +127,7 @@ type UserListResponse struct {
 // ================= ChatResponse =================
 type ChatResponse struct {
 	Response
-	MessageList []models.Message `json:"message_list"`
+	MessageList []Message `json:"message_list"` // 用户列表
 }
 
 type Message struct {

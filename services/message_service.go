@@ -26,7 +26,7 @@ func (ms *MessageService) AddMessage(fromUserID uint, content string, toUserID u
 	return nil
 }
 
-func (MessageService *MessageService) MessageList(fromUserID, toUserID uint) ([]models.Message, error) {
+func (MessageService *MessageService) GetMessageList(fromUserID, toUserID uint) ([]models.Message, error) {
 	var messages []models.Message
 
 	// 查询消息记录
