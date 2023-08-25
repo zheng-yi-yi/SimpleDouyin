@@ -10,17 +10,19 @@ import (
 type MessageService struct {
 }
 
-func (MessageService *MessageService) AddMessage(fromUserID, toUserID uint, content string) error {
-	curMessage := models.Message{
+func (ms *MessageService) AddMessage(fromUserID uint, content string, toUserID uint) error {
+	// 创建消息结构体
+	message := models.Message{
 		FromUserID: fromUserID,
 		ToUserID:   toUserID,
 		Content:    content,
 		CreateTime: time.Now(),
 	}
-	err := config.DB.Create(&curMessage).Error
-	if err != nil {
+	// 将消息插入到数据库
+	if err := config.DB.Create(&message).Error; err != nil {
 		return err
 	}
+
 	return nil
 }
 
