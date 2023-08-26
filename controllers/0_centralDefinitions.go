@@ -137,3 +137,9 @@ type Message struct {
 	Content    string `json:"content"`      // 消息内容
 	CreateTime int64  `json:"create_time"`  // 消息发送时间 yyyy-MM-dd HH:MM:ss
 }
+
+// ================= ChatResponse =================
+type ResponseVideoList struct {
+	Response
+	VideoList []Video `json:"video_list"` // 用户点赞视频列表
+}

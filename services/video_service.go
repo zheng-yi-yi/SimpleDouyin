@@ -41,7 +41,7 @@ func (videoService *VideoService) UserPublishList(userId uint) []*models.Video {
 	return videoList
 }
 
-// 根据点赞过的视频ID ，取出所有对应的视频信息
+// GetVideoInfoByIds ，根据点赞过的视频ID ，取出所有对应的视频信息
 func (videoService *VideoService) GetVideoInfoByIds(videoIds []uint) []*models.Video {
 	var videoList []*models.Video
 	config.DB.Where("id IN ?", videoIds).Preload("User").Find(&videoList)
