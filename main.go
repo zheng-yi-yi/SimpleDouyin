@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/zheng-yi-yi/simpledouyin/config"
+	"github.com/zheng-yi-yi/simpledouyin/setup"
 )
 
 func main() {
@@ -15,11 +16,11 @@ func main() {
 }
 
 func Init() {
-	config.InitConfig()                         // 初始化 config.yaml 配置文件
-	config.GormConfig = config.InitGormConfig() // 初始化 GORM 配置
-	config.DB = config.InitGorm()               // 初始化数据库连接
-	if config.DB != nil {
-		if err := config.CreateTable(config.DB); err != nil {
+	setup.InitConfig()                         // 初始化 config.yaml 配置文件
+	config.GormConfig = setup.InitGormConfig() // 初始化 GORM 配置
+	config.Database = setup.InitGorm()         // 初始化数据库连接
+	if config.Database != nil {
+		if err := setup.CreateTable(config.Database); err != nil {
 			log.Printf("无法创建或更新表: %v", err)
 		}
 		log.Println("数据库表初始化成功!")

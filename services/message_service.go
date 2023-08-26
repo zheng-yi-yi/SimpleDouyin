@@ -19,7 +19,7 @@ func (ms *MessageService) AddMessage(fromUserID uint, content string, toUserID u
 		CreateTime: time.Now(),
 	}
 	// 将消息插入到数据库
-	if err := config.DB.Create(&message).Error; err != nil {
+	if err := config.Database.Create(&message).Error; err != nil {
 		return err
 	}
 
@@ -30,7 +30,7 @@ func (MessageService *MessageService) GetMessageList(fromUserID, toUserID uint) 
 	var messages []models.Message
 
 	// 查询消息记录
-	err := config.DB.Where("from_user_id = ? AND to_user_id = ?", fromUserID, toUserID).
+	err := config.Database.Where("from_user_id = ? AND to_user_id = ?", fromUserID, toUserID).
 		Or("from_user_id = ? AND to_user_id = ?", toUserID, fromUserID).
 		Order("id").
 		Find(&messages).Error

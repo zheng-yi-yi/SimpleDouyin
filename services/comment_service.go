@@ -23,13 +23,13 @@ func (s *CommentService) CreateComment(video_id uint, content string, user_id ui
 		CreatedAt: time.Now(),
 		Cancel:    0,
 	}
-	return config.DB.Create(&comment).Error
+	return config.Database.Create(&comment).Error
 }
 
 // 获取所有未删除的评论
 func (s *CommentService) GetVideoComment(video_id uint) ([]models.Comment, error) {
 	var commentList []models.Comment
-	if err := config.DB.Where("video_id=?", video_id).Find(&commentList).Error; err != nil {
+	if err := config.Database.Where("video_id=?", video_id).Find(&commentList).Error; err != nil {
 		return nil, err
 	}
 	return commentList, nil
@@ -38,11 +38,11 @@ func (s *CommentService) GetVideoComment(video_id uint) ([]models.Comment, error
 // 根据相应的评论获取ID
 func (s *CommentService) GetCommentById(comment_id int64) models.Comment {
 	var comment models.Comment
-	config.DB.Where("id = ?", uint(comment_id)).First(&comment)
+	config.Database.Where("id = ?", uint(comment_id)).First(&comment)
 	return comment
 }
 
 // 根据用户ID、视频ID和评论ID，定位并删除对应评论
 func (s *CommentService) DeleteCommentById(userId, videoId, commentId uint) error {
-	return config.DB.Where("user_id=? and video_id=? and id=?", userId, videoId, commentId).Delete(&models.Comment{}).Error
+	return config.Database.Where("user_id=? and video_id=? and id=?", userId, videoId, commentId).Delete(&models.Comment{}).Error
 }

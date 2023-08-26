@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/zheng-yi-yi/simpledouyin/config"
 )
 
 // 评论列表,已删除的评论和已注销用户的评论不会展示
@@ -43,7 +44,7 @@ func CommentList(c *gin.Context) {
 				FavoriteCount:  userInfo.FavoriteCount,
 			},
 			Content:    comment.Content,
-			CreateDate: comment.CreatedAt.Format("01-02"),
+			CreateDate: comment.CreatedAt.Format(config.SHORT_DATE_FORMAT),
 		})
 	}
 	c.JSON(http.StatusOK, CommentListResponse{

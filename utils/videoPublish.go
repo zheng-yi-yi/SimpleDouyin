@@ -61,7 +61,7 @@ func GetCoverPath(file *multipart.FileHeader, userId uint) string {
 
 // GetVideoName 根据userId_用户发布的视频数量+1
 func GetVideoName(userId uint) string {
-	VideoCount, err := models.GetVideoCount(config.DB, userId)
+	VideoCount, err := models.GetVideoCount(config.Database, userId)
 	if err != nil {
 		log.Printf("无法获取用户的视频个数")
 		return ""
@@ -72,7 +72,7 @@ func GetVideoName(userId uint) string {
 
 // GetCoverName 根据用户ID生成封面图片的文件名
 func GetCoverName(userId uint) string {
-	VideoCount, err := models.GetVideoCount(config.DB, userId)
+	VideoCount, err := models.GetVideoCount(config.Database, userId)
 	if err != nil {
 		log.Printf("无法获取用户的视频个数")
 		return ""

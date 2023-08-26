@@ -7,7 +7,13 @@ import (
 	"github.com/zheng-yi-yi/simpledouyin/controllers"
 )
 
-// 简单的 JWT 鉴权函数：用于指定从哪个位置获取token（query 或 form）
+const (
+	userIDKey     = "userID"
+	authFailedMsg = "Token鉴权失败，非法操作"
+)
+
+// JWTAuth is a middleware for simple JWT authentication.
+// It specifies where to get the token from (query or form).
 func JWTAuth(where string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var token string
@@ -16,14 +22,14 @@ func JWTAuth(where string) gin.HandlerFunc {
 		} else {
 			token = c.Query("token")
 		}
-		// 不存在该用户token则直接抛出用户不存在错误信息
+
 		if _, exists := controllers.UsersLoginInfo[token]; !exists {
-			c.JSON(http.StatusOK, controllers.Response{StatusCode: 1, StatusMsg: "token鉴权失败, 非法操作"})
+			c.JSON(http.StatusUnauthorized, controllers.Response{StatusCode: 1, StatusMsg: authFailedMsg})
 			c.Abort()
 			return
 		}
-		// 如果token存在，将登录用户的ID存储在上下文中，并使用c.Next()继续请求处理流程。
-		c.Set("userID", controllers.UsersLoginInfo[token].ID)
+
+		c.Set(userIDKey, controllers.UsersLoginInfo[token].ID)
 		c.Next()
 	}
 }

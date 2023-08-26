@@ -14,7 +14,7 @@ type RelationService struct {
 // 关注用户
 func (s *RelationService) FollowUser(fromUserId uint, toUserId uint) error {
 	// 获取数据库连接的引用
-	db := config.DB
+	db := config.Database
 	// 检查 fromUserId 和 toUserId 是否是有效的用户
 	var fromUser, toUser models.User
 	if err := db.First(&fromUser, fromUserId).Error; err != nil {
@@ -47,11 +47,11 @@ func (s *RelationService) FollowUser(fromUserId uint, toUserId uint) error {
 		return err
 	}
 	// 更新关注用户的 FollowCount
-	if err := config.DB.Model(&models.User{}).Where("id = ?", fromUserId).UpdateColumn("follow_count", gorm.Expr("follow_count + ?", 1)).Error; err != nil {
+	if err := config.Database.Model(&models.User{}).Where("id = ?", fromUserId).UpdateColumn("follow_count", gorm.Expr("follow_count + ?", 1)).Error; err != nil {
 		return err
 	}
 	// 更新被关注用户的 FollowerCount
-	if err := config.DB.Model(&models.User{}).Where("id = ?", toUserId).UpdateColumn("follower_count", gorm.Expr("follower_count + ?", 1)).Error; err != nil {
+	if err := config.Database.Model(&models.User{}).Where("id = ?", toUserId).UpdateColumn("follower_count", gorm.Expr("follower_count + ?", 1)).Error; err != nil {
 		return err
 	}
 	return nil
@@ -60,7 +60,7 @@ func (s *RelationService) FollowUser(fromUserId uint, toUserId uint) error {
 // 取消关注用户
 func (s *RelationService) CancelFollowUser(fromUserId, toUserId uint) error {
 	// 获取数据库连接的引用
-	db := config.DB
+	db := config.Database
 	// 查找已存在的关注关系
 	var existingRelation models.Relation
 	if err := db.Where("from_user_id = ? AND to_user_id = ?", fromUserId, toUserId).First(&existingRelation).Error; err != nil {
@@ -75,11 +75,11 @@ func (s *RelationService) CancelFollowUser(fromUserId, toUserId uint) error {
 		return err
 	}
 	//更新关注用户的 FollowCount
-	if err := config.DB.Model(&models.User{}).Where("id = ?", fromUserId).Update("follow_count", gorm.Expr("follow_count - 1")).Error; err != nil {
+	if err := config.Database.Model(&models.User{}).Where("id = ?", fromUserId).Update("follow_count", gorm.Expr("follow_count - 1")).Error; err != nil {
 		return err
 	}
 	//更新被关注用户的 FollowerCount
-	if err := config.DB.Model(&models.User{}).Where("id = ?", toUserId).Update("follower_count", gorm.Expr("follower_count - 1")).Error; err != nil {
+	if err := config.Database.Model(&models.User{}).Where("id = ?", toUserId).Update("follower_count", gorm.Expr("follower_count - 1")).Error; err != nil {
 		return err
 	}
 	return nil
@@ -89,7 +89,7 @@ func (s *RelationService) CancelFollowUser(fromUserId, toUserId uint) error {
 func (s *RelationService) GetFllowList(userId uint) ([]models.User, error) {
 	//通过relation表查询用户的所有关注用户Id
 	var relation []models.Relation
-	result := config.DB.Select("to_user_id").Where("from_user_id = ?", userId).Find(&relation)
+	result := config.Database.Select("to_user_id").Where("from_user_id = ?", userId).Find(&relation)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -99,7 +99,7 @@ func (s *RelationService) GetFllowList(userId uint) ([]models.User, error) {
 	}
 	//再通过users表返回被关注的用户的详细信息
 	var users []models.User
-	result = config.DB.Where("id IN (?)", toUserIds).Find(&users)
+	result = config.Database.Where("id IN (?)", toUserIds).Find(&users)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -109,7 +109,7 @@ func (s *RelationService) GetFllowList(userId uint) ([]models.User, error) {
 // 判断是否关注
 func (s *RelationService) IsFollow(fromUserId uint, toUserId uint) bool {
 	// 获取数据库连接的引用
-	db := config.DB
+	db := config.Database
 	// 查找存在的关注关系
 	var existingRelation models.Relation
 	if err := db.Where("from_user_id = ? AND to_user_id = ? AND cancel = 0", fromUserId, toUserId).First(&existingRelation).Error; err != nil {
@@ -122,7 +122,7 @@ func (s *RelationService) IsFollow(fromUserId uint, toUserId uint) bool {
 func (s *RelationService) GetFollowerList(userId uint) ([]models.User, error) {
 	// 通过relation表查询关注了该用户的所有用户Id
 	var relation []models.Relation
-	result := config.DB.Select("from_user_id").Where("to_user_id = ? AND cancel = ?", userId, 0).Find(&relation)
+	result := config.Database.Select("from_user_id").Where("to_user_id = ? AND cancel = ?", userId, 0).Find(&relation)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -132,7 +132,7 @@ func (s *RelationService) GetFollowerList(userId uint) ([]models.User, error) {
 	}
 	// 再通过users表返回粉丝的详细信息
 	var followers []models.User
-	result = config.DB.Where("id IN (?)", followerUserIds).Find(&followers)
+	result = config.Database.Where("id IN (?)", followerUserIds).Find(&followers)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -143,7 +143,7 @@ func (s *RelationService) GetFollowerList(userId uint) ([]models.User, error) {
 func (s *RelationService) GetFriendsList(userID uint) ([]models.User, error) {
 	// 通过relation表查询用户关注的好友
 	var relations []models.Relation
-	result := config.DB.Where("(from_user_id = ? OR to_user_id = ?) AND cancel = ?", userID, userID, 0).Find(&relations)
+	result := config.Database.Where("(from_user_id = ? OR to_user_id = ?) AND cancel = ?", userID, userID, 0).Find(&relations)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -161,7 +161,7 @@ func (s *RelationService) GetFriendsList(userID uint) ([]models.User, error) {
 	var friendUserList []models.User
 	for friendID := range friendUserIDs {
 		var user models.User
-		result := config.DB.First(&user, friendID)
+		result := config.Database.First(&user, friendID)
 		if result.Error != nil {
 			return nil, result.Error
 		}

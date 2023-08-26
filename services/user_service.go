@@ -17,7 +17,7 @@ func (userService *UserService) Register(username, password string) (models.User
 		return models.User{}, errors.New("密码长度不能小于5")
 	}
 	var user models.User
-	err := config.DB.Where("user_name = ?", username).First(&user).Error
+	err := config.Database.Where("user_name = ?", username).First(&user).Error
 	if err == nil {
 		return models.User{}, errors.New("用户名已注册")
 	}
@@ -28,13 +28,13 @@ func (userService *UserService) Register(username, password string) (models.User
 		FollowCount:     0,
 		FollowerCount:   0,
 		FavoriteCount:   0,
-		Avatar:          config.AvatarURL,
-		BackgroundImage: config.BackgroundURL,
-		Signature:       config.SignatureStr,
+		Avatar:          config.DEFAULT_USER_AVATAR_URL,
+		BackgroundImage: config.DEFAULT_USER_BG_IMAGE_URL,
+		Signature:       config.DEFAULT_USER_BIO,
 		TotalFavorited:  "0",
 		WorkCount:       0,
 	}
-	err = config.DB.Create(&user).Error
+	err = config.Database.Create(&user).Error
 	if err != nil {
 		return models.User{}, err
 	}
@@ -44,7 +44,7 @@ func (userService *UserService) Register(username, password string) (models.User
 // 用户登录服务
 func (userService *UserService) Login(username, password string) (models.User, error) {
 	var user models.User
-	err := config.DB.Where("user_name = ? AND pass_word = ?", username, password).First(&user).Error
+	err := config.Database.Where("user_name = ? AND pass_word = ?", username, password).First(&user).Error
 	if err == gorm.ErrRecordNotFound {
 		return models.User{}, errors.New("用户名或密码错误")
 	} else if err != nil {
@@ -56,7 +56,7 @@ func (userService *UserService) Login(username, password string) (models.User, e
 // 通过用户ID获取用户信息
 func (userService *UserService) GetUserInfoById(userId uint) (models.User, error) {
 	var user models.User
-	err := config.DB.Where("id = ?", userId).First(&user).Error
+	err := config.Database.Where("id = ?", userId).First(&user).Error
 	if err == gorm.ErrRecordNotFound {
 		return models.User{}, errors.New("用户不存在")
 	} else if err != nil {

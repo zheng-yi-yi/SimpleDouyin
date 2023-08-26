@@ -14,7 +14,7 @@ func (s *FavoriteService) IsFavorite(userId, videoId uint) bool {
 	var favorite models.Favorite
 
 	// 在数据库中查找匹配的点赞记录
-	result := config.DB.Where("user_id = ? AND video_id = ? AND status = 1", userId, videoId).First(&favorite)
+	result := config.Database.Where("user_id = ? AND video_id = ? AND status = 1", userId, videoId).First(&favorite)
 
 	// 检查是否找到匹配的点赞记录
 	return result.Error == nil
@@ -23,7 +23,7 @@ func (s *FavoriteService) IsFavorite(userId, videoId uint) bool {
 // AddLike ，判断用户是否点赞了该视频
 func (s *FavoriteService) AddLike(userId, videoId uint) error {
 	// 获取数据库连接实例
-	db := config.DB
+	db := config.Database
 
 	// 检查之前是否有记录存在
 	existingLike := models.Favorite{}
@@ -73,7 +73,7 @@ func (s *FavoriteService) AddLike(userId, videoId uint) error {
 // CancelLike ，取消点赞操作
 func (s *FavoriteService) CancelLike(userId, videoId uint) error {
 	// 获取数据库连接实例
-	db := config.DB
+	db := config.Database
 
 	// 创建 Favorite 对象用于存储查询结果
 	var favorite models.Favorite
@@ -117,7 +117,7 @@ func (s *FavoriteService) GetFavoriteList(userId uint) ([]uint, error) {
 	var favorites []models.Favorite
 
 	// 查询该用户点赞的所有记录
-	result := config.DB.Where("user_id = ? AND status = ?", userId, 1).Find(&favorites)
+	result := config.Database.Where("user_id = ? AND status = ?", userId, 1).Find(&favorites)
 	if result.Error != nil {
 		return nil, result.Error
 	}

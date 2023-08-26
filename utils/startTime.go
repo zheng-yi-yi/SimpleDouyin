@@ -15,8 +15,8 @@ func CalculateStartTime(lastTimestamp string) string {
 			if timestamp > 1000000000000 {
 				timestamp /= 1000
 			}
-			return time.Unix(timestamp, 0).Format(config.DateTime)
+			return time.Unix(timestamp, 0).Format(config.DATETIME_FORMAT)
 		}
 	}
-	return time.Now().Format(config.DateTime)
+	return time.Now().Format(config.DATETIME_FORMAT)
 }

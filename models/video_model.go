@@ -15,7 +15,6 @@ type Video struct {
 	FavoriteCount int64  `json:"favorite_count,omitempty" gorm:"type: int; default: 0; comment:点赞数量"`
 	CommentCount  int64  `json:"comment_count,omitempty"  gorm:"type: int; default: 0; comment:视频的评论总数"`
 	Description   string `json:"description,omitempty"    gorm:"type: text; comment:视频描述"`
-	IsFavorite    bool   `json:"is_favorite"              gorm:"-"`
 	User          User   `json:"author,omitempty"         gorm:"foreignKey:UserId; references:ID; comment:视频作者信息"`
 	CreatedAt     time.Time
 }

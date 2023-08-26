@@ -28,7 +28,7 @@ func CommentAction(c *gin.Context) {
 			Failed(c, err.Error())
 			return
 		}
-		if err := models.IncrementCommentCount(config.DB, uint(video_id)); err != nil {
+		if err := models.IncrementCommentCount(config.Database, uint(video_id)); err != nil {
 			Failed(c, err.Error())
 			return
 		}
@@ -45,7 +45,7 @@ func CommentAction(c *gin.Context) {
 		Failed(c, err.Error())
 		return
 	}
-	if err := models.DecreaseCommentCount(config.DB, uint(video_id)); err != nil {
+	if err := models.DecreaseCommentCount(config.Database, uint(video_id)); err != nil {
 		Failed(c, err.Error())
 		return
 	}

@@ -59,7 +59,7 @@ func Publish(c *gin.Context) {
 		return
 	}
 	// 成功创建视频后，调用 IncrementWorkCount 函数
-	if err := models.IncrementWorkCount(config.DB, userId); err != nil {
+	if err := models.IncrementWorkCount(config.Database, userId); err != nil {
 		fmt.Println(err.Error())
 		Failed(c, "用户作品数添加失败...")
 	}
