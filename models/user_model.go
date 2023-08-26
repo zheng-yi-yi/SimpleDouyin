@@ -24,3 +24,8 @@ type User struct {
 func IncrementWorkCount(db *gorm.DB, userID uint) error {
 	return db.Model(&User{}).Where("id = ?", userID).Update("work_count", gorm.Expr("work_count + ?", 1)).Error
 }
+
+// IncrementUserLikeCount 增加用户的点赞数。
+func IncrementUserLikeCount(db *gorm.DB, userID uint) error {
+	return db.Model(&User{}).Where("id = ?", userID).Update("favorite_count", gorm.Expr("favorite_count + ?", 1)).Error
+}
