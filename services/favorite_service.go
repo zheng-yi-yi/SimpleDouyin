@@ -111,3 +111,22 @@ func (s *FavoriteService) CancelLike(userId, videoId uint) error {
 
 	return nil // 操作成功，返回 nil 表示没有错误
 }
+
+// GetFavoriteList ，根据用户ID取出该用户点赞的所有视频ID
+func (s *FavoriteService) GetFavoriteList(userId uint) ([]uint, error) {
+	var favorites []models.Favorite
+
+	// 查询该用户点赞的所有记录
+	result := config.DB.Where("user_id = ? AND status = ?", userId, 1).Find(&favorites)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	// 提取视频ID并放入列表
+	var videoIDs []uint
+	for _, favorite := range favorites {
+		videoIDs = append(videoIDs, favorite.VideoId)
+	}
+
+	return videoIDs, nil
+}
