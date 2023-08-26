@@ -65,3 +65,12 @@ func IncrementVideoLikeCount(db *gorm.DB, videoID uint) error {
 	}
 	return nil
 }
+
+// DecrementVideoLikeCount 减少视频获赞数
+func DecrementVideoLikeCount(db *gorm.DB, videoID uint) error {
+	result := db.Model(&Video{}).Where("id = ?", videoID).UpdateColumn("favorite_count", gorm.Expr("favorite_count - ?", 1))
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
