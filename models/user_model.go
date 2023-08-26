@@ -29,3 +29,8 @@ func IncrementWorkCount(db *gorm.DB, userID uint) error {
 func IncrementUserLikeCount(db *gorm.DB, userID uint) error {
 	return db.Model(&User{}).Where("id = ?", userID).Update("favorite_count", gorm.Expr("favorite_count + ?", 1)).Error
 }
+
+// DecrementUserLikeCount 减少用户的点赞数。
+func DecrementUserLikeCount(db *gorm.DB, userID uint) error {
+	return db.Model(&User{}).Where("id = ?", userID).Update("favorite_count", gorm.Expr("favorite_count - ?", 1)).Error
+}
