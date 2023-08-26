@@ -56,3 +56,12 @@ func GetAuthorIDForVideo(db *gorm.DB, videoID uint) (uint, error) {
 	}
 	return authorID, nil
 }
+
+// IncrementVideoLikeCount 增加视频获赞数
+func IncrementVideoLikeCount(db *gorm.DB, videoID uint) error {
+	result := db.Model(&Video{}).Where("id = ?", videoID).UpdateColumn("favorite_count", gorm.Expr("favorite_count + ?", 1))
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
