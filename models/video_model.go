@@ -47,3 +47,12 @@ func DecreaseCommentCount(db *gorm.DB, videoID uint) error {
 	}
 	return nil
 }
+
+// GetAuthorIDForVideo 根据视频ID获取视频的作者ID
+func GetAuthorIDForVideo(db *gorm.DB, videoID uint) (uint, error) {
+	var authorID uint
+	if err := db.Model(&Video{}).Select("user_id").Where("id = ?", videoID).Scan(&authorID).Error; err != nil {
+		return 0, err
+	}
+	return authorID, nil
+}
