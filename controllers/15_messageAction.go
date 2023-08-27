@@ -9,11 +9,8 @@ import (
 // MessageAction ，发送消息
 func MessageAction(c *gin.Context) {
 	// 当前用户id
-	from_user_id := c.GetUint("userID")
-	if from_user_id == 0 {
-		Failed(c, "用户不存在")
-		return
-	}
+	token := c.Query("token")
+	from_user_id := UsersLoginInfo[token].ID
 	// 对方用户id
 	to_user_id, err := strconv.ParseInt(c.Query("to_user_id"), 10, 64)
 	if err != nil {
