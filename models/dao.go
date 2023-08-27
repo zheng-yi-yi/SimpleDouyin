@@ -71,3 +71,16 @@ func DecrementVideoLikeCount(db *gorm.DB, videoID uint) error {
 	}
 	return nil
 }
+
+// GetVideoInfoByIds 根据点赞过的视频ID，获取所有对应的视频信息
+func GetVideoInfoByIds(db *gorm.DB, videoIds []uint) ([]*Video, error) {
+	var videos []*Video
+
+	// 查询包含在 videoIds 中的视频信息
+	result := db.Where("id IN ?", videoIds).Find(&videos)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return videos, nil
+}

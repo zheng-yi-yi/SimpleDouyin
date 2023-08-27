@@ -1,4 +1,4 @@
-package controllers
+package video
 
 import (
 	"net/http"
@@ -6,33 +6,39 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/zheng-yi-yi/simpledouyin/config"
+	"github.com/zheng-yi-yi/simpledouyin/controllers/favorite"
+	"github.com/zheng-yi-yi/simpledouyin/controllers/relation"
+	"github.com/zheng-yi-yi/simpledouyin/controllers/response"
+	"github.com/zheng-yi-yi/simpledouyin/services"
 	"github.com/zheng-yi-yi/simpledouyin/utils"
 )
+
+var VideoService services.VideoService
 
 // 视频流
 func Feed(c *gin.Context) {
 	token := c.Query("token")
 	lastTimestamp := c.Query("latest_time")
 	startTime := utils.CalculateStartTime(lastTimestamp)
-	userId := UsersLoginInfo[token].ID
-	feedVideo := *videoService.Feed(startTime)
+	userId := response.UsersLoginInfo[token].ID
+	feedVideo := *VideoService.Feed(startTime)
 	lenFeedVideoList := len(feedVideo)
 	if lenFeedVideoList == 0 {
 		// 空数据处理
-		c.JSON(http.StatusOK, FeedResponse{
-			Response:  Response{StatusCode: 0},
-			VideoList: []Video{},
+		c.JSON(http.StatusOK, response.FeedResponse{
+			Response:  response.Response{StatusCode: 0},
+			VideoList: []response.Video{},
 			NextTime:  time.Now().Unix(),
 		})
 		return
 	}
 	nextTime := feedVideo[lenFeedVideoList-1].CreatedAt.Unix()
-	videoList := make([]Video, 0, lenFeedVideoList)
+	videoList := make([]response.Video, 0, lenFeedVideoList)
 	for _, video := range feedVideo {
 		videoList = append(videoList,
-			Video{
+			response.Video{
 				Id: int64(video.ID),
-				Author: User{
+				Author: response.User{
 					Id:             int64(video.User.ID),
 					Name:           video.User.UserName,
 					FollowCount:    int64(video.User.FollowCount),
@@ -53,8 +59,8 @@ func Feed(c *gin.Context) {
 				Title:         video.Description,
 			})
 	}
-	c.JSON(http.StatusOK, FeedResponse{
-		Response:  Response{StatusCode: 0},
+	c.JSON(http.StatusOK, response.FeedResponse{
+		Response:  response.Response{StatusCode: 0},
 		VideoList: videoList,
 		NextTime:  nextTime,
 	})
@@ -65,7 +71,7 @@ func IsFollow(fromUserId, toUserId uint) bool {
 	if fromUserId == 0 {
 		return false
 	}
-	return relationService.IsFollow(fromUserId, toUserId)
+	return relation.RelationService.IsFollow(fromUserId, toUserId)
 }
 
 // 判断用户是否点赞当前视频
@@ -73,5 +79,5 @@ func IsFavorite(userId, videoId uint) bool {
 	if userId == 0 {
 		return false
 	}
-	return favoriteService.IsFavorite(userId, videoId)
+	return favorite.FavoriteService.IsFavorite(userId, videoId)
 }

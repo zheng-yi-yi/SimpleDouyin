@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/zheng-yi-yi/simpledouyin/controllers"
+	"github.com/zheng-yi-yi/simpledouyin/controllers/response"
 )
 
 const (
@@ -23,13 +23,13 @@ func JWTAuth(where string) gin.HandlerFunc {
 			token = c.Query("token")
 		}
 
-		if _, exists := controllers.UsersLoginInfo[token]; !exists {
-			c.JSON(http.StatusUnauthorized, controllers.Response{StatusCode: 1, StatusMsg: authFailedMsg})
+		if _, exists := response.UsersLoginInfo[token]; !exists {
+			c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 1, StatusMsg: authFailedMsg})
 			c.Abort()
 			return
 		}
 
-		c.Set(userIDKey, controllers.UsersLoginInfo[token].ID)
+		c.Set(userIDKey, response.UsersLoginInfo[token].ID)
 		c.Next()
 	}
 }

@@ -1,38 +1,39 @@
-package controllers
+package relation
 
 import (
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/zheng-yi-yi/simpledouyin/controllers/response"
 )
 
 // 关注列表
 func FollowList(c *gin.Context) {
 	loginUserId := c.GetUint("userID")
 	if loginUserId == 0 {
-		Failed(c, "用户不存在")
+		response.Failed(c, "用户不存在")
 		return
 	}
 	userIdStr := c.Query("user_id")
 	var formUserId uint64
 	_formUserId, err := strconv.ParseUint(userIdStr, 10, 64)
 	if err != nil {
-		Failed(c, err.Error())
+		response.Failed(c, err.Error())
 		return
 	} else {
 		formUserId = _formUserId
 	}
 	// 查询用户关注的所有用户
-	users, err := relationService.GetFllowList(uint(formUserId))
+	users, err := RelationService.GetFllowList(uint(formUserId))
 	if err != nil {
-		Failed(c, err.Error())
+		response.Failed(c, err.Error())
 		return
 	}
-	var relationUsers []relationUser
+	var relationUsers []response.RelationUser
 	for _, user := range users {
-		isFollow := relationService.IsFollow(uint(formUserId), user.ID)
-		relationUser := relationUser{
+		isFollow := RelationService.IsFollow(uint(formUserId), user.ID)
+		relationUser := response.RelationUser{
 			ID:              int64(user.ID),
 			Name:            user.UserName,
 			Avatar:          user.Avatar,
@@ -47,8 +48,8 @@ func FollowList(c *gin.Context) {
 		}
 		relationUsers = append(relationUsers, relationUser)
 	}
-	c.JSON(http.StatusOK, UserListResponse{
-		Response: Response{StatusCode: 0},
+	c.JSON(http.StatusOK, response.UserListResponse{
+		Response: response.Response{StatusCode: 0},
 		UserList: relationUsers,
 	})
 }

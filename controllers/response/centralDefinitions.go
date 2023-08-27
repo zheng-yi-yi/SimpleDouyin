@@ -1,21 +1,10 @@
-package controllers
+package response
 
 import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/zheng-yi-yi/simpledouyin/models"
-	"github.com/zheng-yi-yi/simpledouyin/services"
-)
-
-// ================= Service =================
-var (
-	userService     services.UserService
-	videoService    services.VideoService
-	favoriteService services.FavoriteService
-	relationService services.RelationService
-	messageService  services.MessageService
-	commentService  services.CommentService
 )
 
 // ================= Response =================
@@ -29,7 +18,7 @@ func Success(c *gin.Context, msg string) {
 }
 
 func Failed(c *gin.Context, msg string) {
-	c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: msg})
+	c.JSON(http.StatusUnauthorized, Response{StatusCode: 1, StatusMsg: msg})
 }
 
 // ================= Video =================
@@ -105,7 +94,7 @@ type CommentActionResponse struct {
 }
 
 // ================= relation =================
-type relationUser struct {
+type RelationUser struct {
 	ID              int64  `json:"id,omitempty"`
 	Name            string `json:"name,omitempty"`
 	Avatar          string `json:"avatar,omitempty"`           //用户头像
@@ -121,7 +110,7 @@ type relationUser struct {
 
 type UserListResponse struct {
 	Response
-	UserList []relationUser `json:"user_list"`
+	UserList []RelationUser `json:"user_list"`
 }
 
 // ================= ChatResponse =================
