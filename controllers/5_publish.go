@@ -12,12 +12,9 @@ import (
 
 // Publish 处理视频投稿发布请求。
 func Publish(c *gin.Context) {
-	// 获取用户ID
-	userId := c.GetUint("userID")
-	if userId == 0 {
-		Failed(c, "不存在该用户...")
-		return
-	}
+	// 当前用户id
+	token := c.Query("token")
+	userId := UsersLoginInfo[token].ID
 	// 获取视频标题
 	title := c.PostForm("title")
 	// 获取上传的视频文件
