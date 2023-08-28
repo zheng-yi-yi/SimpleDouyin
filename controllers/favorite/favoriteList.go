@@ -1,42 +1,36 @@
 package favorite
 
 import (
-	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/zheng-yi-yi/simpledouyin/config"
-	"github.com/zheng-yi-yi/simpledouyin/controllers/relation"
 	"github.com/zheng-yi-yi/simpledouyin/controllers/response"
+	"github.com/zheng-yi-yi/simpledouyin/controllers/video"
 	"github.com/zheng-yi-yi/simpledouyin/models"
 )
 
 // FavoriteList , 获取用户的所有点赞视频
 func FavoriteList(c *gin.Context) {
-	userId, err := strconv.ParseUint(c.Query("user_id"), 10, 64)
+	// 要查询的用户id
+	query_user_id, err := strconv.ParseUint(c.Query("user_id"), 10, 64)
 	if err != nil {
-		response.Failed(c, err.Error())
+		// 用户id参数类型转换失败
+		response.UserIdConversionError(c)
 		return
 	}
-	// 根据用户ID 取出该用户点赞的所有视频ID
-	videoIds, err := FavoriteService.GetFavoriteList(uint(userId))
+	// 根据要查询的用户id，取出该用户点赞的所有视频ID
+	videoIds, err := FavoriteService.GetFavoriteList(uint(query_user_id))
 	if err != nil {
-		response.Failed(c, err.Error())
+		response.UnsuccessfulAction(c)
 		return
 	}
 	// 根据点赞过的视频ID 取出所有对应的视频信息
-	videoInfoList, err := models.GetVideoInfoByIds(config.Database, videoIds)
-	if err != nil {
-		response.Failed(c, err.Error())
-	}
+	videoInfoList := video.VideoService.GetVideoInfoByIds(videoIds)
+	// 如果点赞列表长度为0，则返回空的成功响应
 	if len(videoInfoList) == 0 {
-		c.JSON(http.StatusOK, response.ResponseVideoList{
-			Response: response.Response{
-				StatusCode: 0,
-				StatusMsg:  "success",
-			},
-			VideoList: []response.Video{},
-		})
+		// 视频列表获取成功
+		response.GetFavoriteListSucceeded(c, []response.Video{})
 		return
 	}
 	videoList := make([]response.Video, 0, len(videoInfoList))
@@ -48,7 +42,7 @@ func FavoriteList(c *gin.Context) {
 				Name:           videoInfoList[i].User.UserName,
 				FollowCount:    int64(videoInfoList[i].User.FollowCount),
 				FollowerCount:  int64(videoInfoList[i].User.FollowerCount),
-				IsFollow:       relation.RelationService.IsFollow(uint(userId), videoInfoList[i].User.ID),
+				IsFollow:       models.IsFollow(uint(query_user_id), videoInfoList[i].User.ID),
 				Avatar:         videoInfoList[i].User.Avatar,
 				Background:     videoInfoList[i].User.BackgroundImage,
 				Signature:      videoInfoList[i].User.Signature,
@@ -60,15 +54,10 @@ func FavoriteList(c *gin.Context) {
 			CoverUrl:      config.SERVER_RESOURCES + videoInfoList[i].CoverUrl,
 			FavoriteCount: videoInfoList[i].FavoriteCount,
 			CommentCount:  videoInfoList[i].CommentCount,
-			IsFavorite:    FavoriteService.IsFavorite(uint(userId), videoInfoList[i].ID),
+			IsFavorite:    models.IsFavorite(uint(query_user_id), videoInfoList[i].ID),
 			Title:         videoInfoList[i].Description,
 		})
 	}
-	c.JSON(http.StatusOK, response.ResponseVideoList{
-		Response: response.Response{
-			StatusCode: 0,
-			StatusMsg:  "success",
-		},
-		VideoList: videoList,
-	})
+	// 获取视频列表成功
+	response.GetFavoriteListSucceeded(c, videoList)
 }

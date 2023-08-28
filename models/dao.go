@@ -1,26 +1,49 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"github.com/zheng-yi-yi/simpledouyin/config"
+	"gorm.io/gorm"
+)
+
+// 判断登录用户是否关注了视频作者
+func IsFollow(fromUserId, toUserId uint) bool {
+	// 查找存在的关注关系
+	var existingRelation Relation
+	if err := config.Database.Where("from_user_id = ? AND to_user_id = ? AND cancel = 0", fromUserId, toUserId).First(&existingRelation).Error; err != nil {
+		return false
+	}
+	return true
+}
+
+// 判断用户是否点赞当前视频
+func IsFavorite(userId, videoId uint) bool {
+	// 创建一个 Favorite 结构体实例，用于存储查询结果
+	var favorite Favorite
+	// 在数据库中查找匹配的点赞记录
+	result := config.Database.Where("user_id = ? AND video_id = ? AND status = 1", userId, videoId).First(&favorite)
+	// 检查是否找到匹配的点赞记录
+	return result.Error == nil
+}
 
 // IncrementWorkCount 增加用户的作品数。
-func IncrementWorkCount(db *gorm.DB, userID uint) error {
-	return db.Model(&User{}).Where("id = ?", userID).Update("work_count", gorm.Expr("work_count + ?", 1)).Error
+func IncrementWorkCount(userID uint) error {
+	return config.Database.Model(&User{}).Where("id = ?", userID).Update("work_count", gorm.Expr("work_count + ?", 1)).Error
 }
 
 // IncrementUserLikeCount 增加用户的点赞数。
-func IncrementUserLikeCount(db *gorm.DB, userID uint) error {
-	return db.Model(&User{}).Where("id = ?", userID).Update("favorite_count", gorm.Expr("favorite_count + ?", 1)).Error
+func IncrementUserLikeCount(userID uint) error {
+	return config.Database.Model(&User{}).Where("id = ?", userID).Update("favorite_count", gorm.Expr("favorite_count + ?", 1)).Error
 }
 
 // DecrementUserLikeCount 减少用户的点赞数。
-func DecrementUserLikeCount(db *gorm.DB, userID uint) error {
-	return db.Model(&User{}).Where("id = ?", userID).Update("favorite_count", gorm.Expr("favorite_count - ?", 1)).Error
+func DecrementUserLikeCount(userID uint) error {
+	return config.Database.Model(&User{}).Where("id = ?", userID).Update("favorite_count", gorm.Expr("favorite_count - ?", 1)).Error
 }
 
 // GetVideoCount 根据用户ID查询其拥有的视频数量。
-func GetVideoCount(db *gorm.DB, userId uint) (int64, error) {
+func GetVideoCount(userId uint) (int64, error) {
 	var videoCount int64
-	result := db.Model(&Video{}).Where("user_id = ?", userId).Count(&videoCount)
+	result := config.Database.Model(&Video{}).Where("user_id = ?", userId).Count(&videoCount)
 	if result.Error != nil {
 		return 0, result.Error
 	}
@@ -28,8 +51,8 @@ func GetVideoCount(db *gorm.DB, userId uint) (int64, error) {
 }
 
 // IncrementCommentCount 增加指定视频的评论数（加一）
-func IncrementCommentCount(db *gorm.DB, videoID uint) error {
-	result := db.Model(&Video{}).Where("id = ?", videoID).UpdateColumn("comment_count", gorm.Expr("comment_count + ?", 1))
+func IncrementCommentCount(videoID uint) error {
+	result := config.Database.Model(&Video{}).Where("id = ?", videoID).UpdateColumn("comment_count", gorm.Expr("comment_count + ?", 1))
 	if result.Error != nil {
 		return result.Error
 	}
@@ -37,8 +60,8 @@ func IncrementCommentCount(db *gorm.DB, videoID uint) error {
 }
 
 // DecreaseCommentCount 减少指定视频的评论数（减一）
-func DecreaseCommentCount(db *gorm.DB, videoID uint) error {
-	result := db.Model(&Video{}).Where("id = ?", videoID).UpdateColumn("comment_count", gorm.Expr("comment_count - ?", 1))
+func DecreaseCommentCount(videoID uint) error {
+	result := config.Database.Model(&Video{}).Where("id = ?", videoID).UpdateColumn("comment_count", gorm.Expr("comment_count - ?", 1))
 	if result.Error != nil {
 		return result.Error
 	}
@@ -46,17 +69,17 @@ func DecreaseCommentCount(db *gorm.DB, videoID uint) error {
 }
 
 // GetAuthorIDForVideo 根据视频ID获取视频的作者ID
-func GetAuthorIDForVideo(db *gorm.DB, videoID uint) (uint, error) {
+func GetAuthorIDForVideo(videoID uint) (uint, error) {
 	var authorID uint
-	if err := db.Model(&Video{}).Select("user_id").Where("id = ?", videoID).Scan(&authorID).Error; err != nil {
+	if err := config.Database.Model(&Video{}).Select("user_id").Where("id = ?", videoID).Scan(&authorID).Error; err != nil {
 		return 0, err
 	}
 	return authorID, nil
 }
 
 // IncrementVideoLikeCount 增加视频获赞数
-func IncrementVideoLikeCount(db *gorm.DB, videoID uint) error {
-	result := db.Model(&Video{}).Where("id = ?", videoID).UpdateColumn("favorite_count", gorm.Expr("favorite_count + ?", 1))
+func IncrementVideoLikeCount(videoID uint) error {
+	result := config.Database.Model(&Video{}).Where("id = ?", videoID).UpdateColumn("favorite_count", gorm.Expr("favorite_count + ?", 1))
 	if result.Error != nil {
 		return result.Error
 	}
@@ -64,23 +87,20 @@ func IncrementVideoLikeCount(db *gorm.DB, videoID uint) error {
 }
 
 // DecrementVideoLikeCount 减少视频获赞数
-func DecrementVideoLikeCount(db *gorm.DB, videoID uint) error {
-	result := db.Model(&Video{}).Where("id = ?", videoID).UpdateColumn("favorite_count", gorm.Expr("favorite_count - ?", 1))
+func DecrementVideoLikeCount(videoID uint) error {
+	result := config.Database.Model(&Video{}).Where("id = ?", videoID).UpdateColumn("favorite_count", gorm.Expr("favorite_count - ?", 1))
 	if result.Error != nil {
 		return result.Error
 	}
 	return nil
 }
 
-// GetVideoInfoByIds 根据点赞过的视频ID，获取所有对应的视频信息
-func GetVideoInfoByIds(db *gorm.DB, videoIds []uint) ([]*Video, error) {
-	var videos []*Video
-
-	// 查询包含在 videoIds 中的视频信息
-	result := db.Where("id IN ?", videoIds).Find(&videos)
-	if result.Error != nil {
-		return nil, result.Error
+// FetchData , 通过用户ID获取用户信息
+func FetchData(userId uint) (User, error) {
+	var user User
+	err := config.Database.Where("id = ?", userId).First(&user).Error
+	if err != nil {
+		return User{}, err
 	}
-
-	return videos, nil
+	return user, nil
 }

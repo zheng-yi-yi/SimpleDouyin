@@ -52,15 +52,3 @@ func (userService *UserService) Login(username, password string) (models.User, e
 	}
 	return user, nil
 }
-
-// 通过用户ID获取用户信息
-func (userService *UserService) GetUserInfoById(userId uint) (models.User, error) {
-	var user models.User
-	err := config.Database.Where("id = ?", userId).First(&user).Error
-	if err == gorm.ErrRecordNotFound {
-		return models.User{}, errors.New("用户不存在")
-	} else if err != nil {
-		return models.User{}, err
-	}
-	return user, nil
-}

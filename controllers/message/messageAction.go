@@ -12,13 +12,12 @@ var MessageService services.MessageService
 
 // MessageAction ，发送消息
 func MessageAction(c *gin.Context) {
-	// 当前用户id
-	token := c.Query("token")
-	from_user_id := response.UsersLoginInfo[token].ID
-	// 对方用户id
-	to_user_id, err := strconv.ParseInt(c.Query("to_user_id"), 10, 64)
+	// 当前登录的用户
+	from_user_id := c.Value("userID").(uint)
+	// 要查询的对方用户id
+	to_user_id, err := strconv.ParseUint(c.Query("user_id"), 10, 64)
 	if err != nil {
-		response.Failed(c, err.Error())
+		response.UserIdConversionError(c) // 用户id参数类型转换失败
 		return
 	}
 	action_type := c.Query("action_type")
@@ -26,11 +25,11 @@ func MessageAction(c *gin.Context) {
 	if action_type == "1" {
 		content := c.Query("content") // 消息内容
 		if err := MessageService.AddMessage(uint(from_user_id), content, uint(to_user_id)); err != nil {
-			response.Failed(c, err.Error())
+			response.MessageActionError(c) // 消息发送失败
 			return
 		}
-		response.Success(c, "成功发送信息")
+		response.MessageActionSucceeded(c) // 消息发送成功
 		return
 	}
-	response.Failed(c, "消息发送失败")
+	response.UnsuccessfulAction(c) // 非法操作
 }

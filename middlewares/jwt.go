@@ -2,34 +2,87 @@ package middlewares
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/zheng-yi-yi/simpledouyin/controllers/response"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/zheng-yi-yi/simpledouyin/config"
 )
 
+// 密钥
+var JwtKey = []byte(config.AUTH_KEY)
+
+// 一些常量
 const (
-	userIDKey     = "userID"
-	authFailedMsg = "Token鉴权失败，非法操作"
+	ISSUE            = "SimpleDouyin"
+	CheckFailed      = "校验失败"
+	ParseTokenFailed = "解析token失败"
+	GetTokenFailed   = "获取token失败"
 )
 
-// JWTAuth is a middleware for simple JWT authentication.
-// It specifies where to get the token from (query or form).
-func JWTAuth(where string) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		var token string
-		if where == "form" {
-			token = c.PostForm("token")
-		} else {
-			token = c.Query("token")
-		}
+// MyClaims，定义 JWT 的声明
+type MyClaims struct {
+	UserID   uint
+	Username string
+	Password string
+	jwt.RegisteredClaims
+}
 
-		if _, exists := response.UsersLoginInfo[token]; !exists {
-			c.JSON(http.StatusUnauthorized, response.Response{StatusCode: 1, StatusMsg: authFailedMsg})
+// 鉴权失败响应
+type AuthFailResponse struct {
+	StatusCode int64  `json:"status_code"` // 状态码，0-成功，其他值-失败
+	StatusMsg  string `json:"status_msg"`  // 返回状态描述
+}
+
+// GenerateToken , 生成token
+func GenerateToken(userId uint, username, password string) (string, error) {
+	claims := MyClaims{
+		userId,
+		username, // 用户名
+		password, // 密码
+		jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)), // 过期时间（通常相对于当前时间设置）
+			IssuedAt:  jwt.NewNumericDate(time.Now()),                     // 令牌的发行时间（即创建时间）
+			NotBefore: jwt.NewNumericDate(time.Now()),                     // 令牌生效时间（在此时间之前令牌无效）
+			Issuer:    ISSUE,                                              // 创建此令牌的实体
+		},
+	}
+	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(JwtKey)
+	if err != nil {
+		return "", err
+	}
+	return token, nil
+}
+
+// Auth , 验证 JWT token，并将其中的用户信息解析后存储在 Gin 的上下文中
+func Auth() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// 获取token
+		tokenString := c.Query("token")
+		if len(tokenString) == 0 {
+			c.Set("userID", uint(0))
+			c.Next()
+			return
+		}
+		// 解析 token
+		token, err := jwt.ParseWithClaims(tokenString, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
+			return JwtKey, nil
+		})
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, AuthFailResponse{StatusCode: 1, StatusMsg: ParseTokenFailed})
 			c.Abort()
 			return
 		}
-
-		c.Set(userIDKey, response.UsersLoginInfo[token].ID)
-		c.Next()
+		// 校验鉴权的声明
+		if token != nil {
+			claims, ok := token.Claims.(*MyClaims)
+			if ok && token.Valid {
+				c.Set("userID", claims.UserID)
+				c.Next()
+				return
+			}
+		}
+		c.JSON(http.StatusInternalServerError, AuthFailResponse{StatusCode: 1, StatusMsg: CheckFailed})
+		c.Abort()
 	}
 }

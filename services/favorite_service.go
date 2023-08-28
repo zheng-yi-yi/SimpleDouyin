@@ -54,16 +54,16 @@ func (s *FavoriteService) AddLike(userId, videoId uint) error {
 	}
 
 	// 获取该点赞视频的用户id
-	author_id, err := models.GetAuthorIDForVideo(db, uint(videoId))
+	author_id, err := models.GetAuthorIDForVideo(uint(videoId))
 	if err != nil {
 		return err
 	}
 	// 成功点赞后，调用 IncrementUserLikeCount 函数，将用户的点赞数加一
-	if err := models.IncrementUserLikeCount(db, author_id); err != nil {
+	if err := models.IncrementUserLikeCount(author_id); err != nil {
 		return err
 	}
 	// 成功点赞后，调用 IncrementVideoLikeCount 函数，将视频的获赞数加一
-	if err := models.IncrementVideoLikeCount(db, uint(videoId)); err != nil {
+	if err := models.IncrementVideoLikeCount(uint(videoId)); err != nil {
 		return err
 	}
 
@@ -94,18 +94,18 @@ func (s *FavoriteService) CancelLike(userId, videoId uint) error {
 	}
 
 	// 获取该点赞视频的用户id
-	author_id, err := models.GetAuthorIDForVideo(db, uint(videoId))
+	author_id, err := models.GetAuthorIDForVideo(uint(videoId))
 	if err != nil {
 		return err
 	}
 
 	// 成功取消点赞后，调用 DecrementUserLikeCount 函数，将用户的点赞数减一
-	if err := models.DecrementUserLikeCount(db, author_id); err != nil {
+	if err := models.DecrementUserLikeCount(author_id); err != nil {
 		return err
 	}
 
 	// 成功取消点赞后，调用 IncrementVideoLikeCount 函数，将视频的获赞数加一
-	if err := models.DecrementVideoLikeCount(db, uint(videoId)); err != nil {
+	if err := models.DecrementVideoLikeCount(uint(videoId)); err != nil {
 		return err
 	}
 

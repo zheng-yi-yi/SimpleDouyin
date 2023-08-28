@@ -1,40 +1,33 @@
 package user
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/zheng-yi-yi/simpledouyin/controllers/response"
+	"github.com/zheng-yi-yi/simpledouyin/middlewares"
 	"github.com/zheng-yi-yi/simpledouyin/services"
 )
 
 var UserService services.UserService
 
-// 用户登录
+// Login , 用户登录
 func Login(c *gin.Context) {
-	// 获取传递的用户名和密码。
+	// 获取请求参数
 	username := c.Query("username")
 	password := c.Query("password")
-	// 简单地将用户名和密码连接起来作为 token 的值，后续再改为更强的加密手段来生成 token
-	token := username + password
-	// 调用 UserService.Login 来进行用户登录，并获取登录结果。
+	// 用户登录
 	user, err := UserService.Login(username, password)
-	// 检查登录结果，如果发生错误则返回错误信息：
 	if err != nil {
-		c.JSON(http.StatusOK, response.UserLoginResponse{
-			Response: response.Response{StatusCode: 1, StatusMsg: err.Error()},
-		})
+		// 用户登录失败
+		response.UserLoginFailure(c)
 		return
 	}
-	// 存储已登录的用户的信息
-	response.UsersLoginInfo[token] = user
-	// 返回成功的 JSON 响应给客户端
-	c.JSON(http.StatusOK, response.UserLoginResponse{
-		Response: response.Response{
-			StatusCode: 0,
-			StatusMsg:  "登陆成功",
-		},
-		UserId: int(user.ID),
-		Token:  token,
-	})
+	// 生成 token
+	token, err := middlewares.GenerateToken(user.ID, username, password)
+	if err != nil {
+		// 用户登录时 token 生成失败
+		response.UserLoginTokenError(c)
+		return
+	}
+	// 用户登录成功
+	response.UserLoginComplete(c, int32(user.ID), token)
 }

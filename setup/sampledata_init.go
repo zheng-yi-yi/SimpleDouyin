@@ -127,7 +127,7 @@ var initialVideos = []models.Video{
 		PlayUrl:       "videos/3_1.mp4",                  // 视频地址
 		CoverUrl:      "images/3_1.png",                  // 封面图地址
 		FavoriteCount: 4,                                 // 点赞数量
-		CommentCount:  3,                                 // 评论数量
+		CommentCount:  2,                                 // 评论数量
 		Description:   "不看到最后一秒你都不知道会看到谁。#海贼王 #路飞 #超燃混剪", // 视频标题
 		CreatedAt:     time.Now(),
 	},
@@ -136,7 +136,7 @@ var initialVideos = []models.Video{
 		PlayUrl:       "videos/6_1.mp4", // 视频地址
 		CoverUrl:      "images/6_1.png", // 封面图地址
 		FavoriteCount: 4,                // 点赞数量
-		CommentCount:  2,                // 评论数量
+		CommentCount:  3,                // 评论数量
 		Description:   "好像做了一场短暂的山水梦",   // 视频标题
 		CreatedAt:     time.Now(),
 	},
@@ -263,30 +263,30 @@ func initFavorites(db *gorm.DB) {
 // ========== 评论表-样例数据 ==========
 
 var initialComments = []models.Comment{
-	{UserId: 2, VideoId: 1, CreatedAt: time.Now(), Cancel: 0, Content: "好啦好啦，都在歌单里啦"},
-	{UserId: 4, VideoId: 1, CreatedAt: time.Now(), Cancel: 0, Content: "爷青回！！！"},
-	{UserId: 6, VideoId: 1, CreatedAt: time.Now(), Cancel: 0, Content: "好活，当赏"},
-	{UserId: 5, VideoId: 2, CreatedAt: time.Now(), Cancel: 0, Content: "来学习了"},
-	{UserId: 6, VideoId: 2, CreatedAt: time.Now(), Cancel: 0, Content: "真不错！"},
-	{UserId: 2, VideoId: 3, CreatedAt: time.Now(), Cancel: 0, Content: "敢问阁下，海贼诸多反派中最喜欢哪个？"},
-	{UserId: 6, VideoId: 3, CreatedAt: time.Now(), Cancel: 0, Content: "唯一差评，没有罗！！！"},
-	{UserId: 2, VideoId: 4, CreatedAt: time.Now(), Cancel: 0, Content: "说走就走的旅行..."},
-	{UserId: 1, VideoId: 4, CreatedAt: time.Now(), Cancel: 0, Content: "这首歌好像在哪里听过！"},
-	{UserId: 5, VideoId: 4, CreatedAt: time.Now(), Cancel: 0, Content: "好久没出去玩了，走起"},
-	{UserId: 3, VideoId: 5, CreatedAt: time.Now(), Cancel: 0, Content: "变装那一瞬间好高级"},
-	{UserId: 1, VideoId: 5, CreatedAt: time.Now(), Cancel: 0, Content: "这服装好看！"},
-	{UserId: 4, VideoId: 5, CreatedAt: time.Now(), Cancel: 0, Content: "这种变装是怎么做到的！"},
-	{UserId: 1, VideoId: 6, CreatedAt: time.Now(), Cancel: 0, Content: "因世上的至爱是不计较条件..."},
-	{UserId: 2, VideoId: 7, CreatedAt: time.Now(), Cancel: 0, Content: "年少的梦终将绽放于盛夏，解放之鼓必将响彻整个夏天"},
-	{UserId: 6, VideoId: 7, CreatedAt: time.Now(), Cancel: 0, Content: "啧，怎么说呢......"},
-	{UserId: 1, VideoId: 7, CreatedAt: time.Now(), Cancel: 0, Content: "好看"},
-	{UserId: 3, VideoId: 8, CreatedAt: time.Now(), Cancel: 0, Content: "落霞与孤鹜齐飞，秋水共长天一色"},
-	{UserId: 5, VideoId: 8, CreatedAt: time.Now(), Cancel: 0, Content: "为天地立心，为生民立命，为往圣继绝学，为万世开太平"},
-	{UserId: 5, VideoId: 9, CreatedAt: time.Now(), Cancel: 0, Content: "夕阳洒在世界的尽头"},
-	{UserId: 1, VideoId: 10, CreatedAt: time.Now(), Cancel: 0, Content: "好想再看一次他的演唱会"},
-	{UserId: 4, VideoId: 10, CreatedAt: time.Now(), Cancel: 0, Content: "还得是张学友"},
-	{UserId: 3, VideoId: 10, CreatedAt: time.Now(), Cancel: 0, Content: "经典"},
-	{UserId: 2, VideoId: 10, CreatedAt: time.Now(), Cancel: 0, Content: "满满的回忆"},
+	{UserId: 2, VideoId: 1, CreatedAt: time.Now(), Content: "好啦好啦，都在歌单里啦"},
+	{UserId: 4, VideoId: 1, CreatedAt: time.Now(), Content: "爷青回！！！"},
+	{UserId: 6, VideoId: 1, CreatedAt: time.Now(), Content: "好活，当赏"},
+	{UserId: 5, VideoId: 2, CreatedAt: time.Now(), Content: "来学习了"},
+	{UserId: 6, VideoId: 2, CreatedAt: time.Now(), Content: "真不错！"},
+	{UserId: 2, VideoId: 3, CreatedAt: time.Now(), Content: "敢问阁下，海贼诸多反派中最喜欢哪个？"},
+	{UserId: 6, VideoId: 3, CreatedAt: time.Now(), Content: "唯一差评，没有罗！！！"},
+	{UserId: 2, VideoId: 4, CreatedAt: time.Now(), Content: "说走就走的旅行..."},
+	{UserId: 1, VideoId: 4, CreatedAt: time.Now(), Content: "这首歌好像在哪里听过！"},
+	{UserId: 5, VideoId: 4, CreatedAt: time.Now(), Content: "好久没出去玩了，走起"},
+	{UserId: 3, VideoId: 5, CreatedAt: time.Now(), Content: "变装那一瞬间好高级"},
+	{UserId: 1, VideoId: 5, CreatedAt: time.Now(), Content: "这服装好看！"},
+	{UserId: 4, VideoId: 5, CreatedAt: time.Now(), Content: "这种变装是怎么做到的！"},
+	{UserId: 1, VideoId: 6, CreatedAt: time.Now(), Content: "因世上的至爱是不计较条件..."},
+	{UserId: 2, VideoId: 7, CreatedAt: time.Now(), Content: "年少的梦终将绽放于盛夏，解放之鼓必将响彻整个夏天"},
+	{UserId: 6, VideoId: 7, CreatedAt: time.Now(), Content: "啧，怎么说呢......"},
+	{UserId: 1, VideoId: 7, CreatedAt: time.Now(), Content: "好看"},
+	{UserId: 3, VideoId: 8, CreatedAt: time.Now(), Content: "落霞与孤鹜齐飞，秋水共长天一色"},
+	{UserId: 5, VideoId: 8, CreatedAt: time.Now(), Content: "为天地立心，为生民立命，为往圣继绝学，为万世开太平"},
+	{UserId: 5, VideoId: 9, CreatedAt: time.Now(), Content: "夕阳洒在世界的尽头"},
+	{UserId: 1, VideoId: 10, CreatedAt: time.Now(), Content: "好想再看一次他的演唱会"},
+	{UserId: 4, VideoId: 10, CreatedAt: time.Now(), Content: "还得是张学友"},
+	{UserId: 3, VideoId: 10, CreatedAt: time.Now(), Content: "经典"},
+	{UserId: 2, VideoId: 10, CreatedAt: time.Now(), Content: "满满的回忆"},
 }
 
 func initComments(db *gorm.DB) {

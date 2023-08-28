@@ -1,7 +1,6 @@
 package message
 
 import (
-	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -10,25 +9,18 @@ import (
 
 // MessageChat ，获取聊天记录
 func MessageChat(c *gin.Context) {
-	// 获取当前用户id
-	token := c.Query("token")
-	userId := response.UsersLoginInfo[token].ID
+	// 当前登录的用户
+	from_user_id := c.Value("userID").(uint)
 	// 获取对方用户id
 	to_user_id, err := strconv.ParseUint(c.Query("to_user_id"), 10, 64)
 	if err != nil {
-		response.Failed(c, err.Error())
+		response.ToUserIdConversionError(c) // 对方用户id参数类型转换失败
 		return
 	}
 	// 获取消息列表
-	messages, err := MessageService.GetMessageList(userId, uint(to_user_id))
+	messages, err := MessageService.GetMessageList(from_user_id, uint(to_user_id))
 	if err != nil {
-		c.JSON(http.StatusOK, response.ChatResponse{
-			Response: response.Response{
-				StatusCode: 0,
-				StatusMsg:  "无法获取聊天记录",
-			},
-			MessageList: nil,
-		})
+		response.GetMessageChatError(c) // 聊天记录获取失败
 		return
 	}
 	messageList := make([]response.Message, 0, len(messages))
@@ -41,11 +33,5 @@ func MessageChat(c *gin.Context) {
 			CreateTime: message.CreateTime.Unix(),
 		})
 	}
-	c.JSON(http.StatusOK, response.ChatResponse{
-		Response: response.Response{
-			StatusCode: 0,
-			StatusMsg:  "成功获取聊天记录",
-		},
-		MessageList: messageList,
-	})
+	response.GetMessageChatSucceeded(c, messageList) // 聊天记录获取成功
 }

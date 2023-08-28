@@ -1,55 +1,47 @@
 package relation
 
 import (
-	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/zheng-yi-yi/simpledouyin/controllers/response"
+	"github.com/zheng-yi-yi/simpledouyin/models"
 )
 
-// 关注列表
+// FollowList ，关注列表
 func FollowList(c *gin.Context) {
-	loginUserId := c.GetUint("userID")
-	if loginUserId == 0 {
-		response.Failed(c, "用户不存在")
-		return
-	}
-	userIdStr := c.Query("user_id")
-	var formUserId uint64
-	_formUserId, err := strconv.ParseUint(userIdStr, 10, 64)
+	// 当前登录的用户
+	userId := c.Value("userID").(uint)
+	// 要查询的用户id
+	query_user_id, err := strconv.ParseUint(c.Query("user_id"), 10, 64)
 	if err != nil {
-		response.Failed(c, err.Error())
+		response.UserIdConversionError(c) // 用户id参数类型转换失败
 		return
-	} else {
-		formUserId = _formUserId
 	}
 	// 查询用户关注的所有用户
-	users, err := RelationService.GetFllowList(uint(formUserId))
+	users, err := RelationService.GetFllowList(uint(query_user_id))
 	if err != nil {
-		response.Failed(c, err.Error())
+		// 关注列表获取失败
+		response.GetFollowListError(c)
 		return
 	}
-	var relationUsers []response.RelationUser
+	var relationUsers []response.User
 	for _, user := range users {
-		isFollow := RelationService.IsFollow(uint(formUserId), user.ID)
-		relationUser := response.RelationUser{
-			ID:              int64(user.ID),
-			Name:            user.UserName,
-			Avatar:          user.Avatar,
-			Signature:       user.Signature,
-			FollowCount:     int64(user.FollowCount),
-			FollowerCount:   int64(user.FollowCount),
-			IsFollow:        isFollow,
-			BackgroundImage: user.BackgroundImage,
-			TotalFavorited:  user.TotalFavorited,
-			WorkCount:       user.WorkCount,
-			FavoriteCount:   user.FavoriteCount,
+		relationUser := response.User{
+			Id:             int64(user.ID),
+			Name:           user.UserName,
+			Avatar:         user.Avatar,
+			Signature:      user.Signature,
+			FollowCount:    int64(user.FollowCount),
+			FollowerCount:  int64(user.FollowCount),
+			IsFollow:       models.IsFollow(uint(userId), user.ID),
+			Background:     user.BackgroundImage,
+			TotalFavorited: user.TotalFavorited,
+			WorkCount:      user.WorkCount,
+			FavoriteCount:  user.FavoriteCount,
 		}
 		relationUsers = append(relationUsers, relationUser)
 	}
-	c.JSON(http.StatusOK, response.UserListResponse{
-		Response: response.Response{StatusCode: 0},
-		UserList: relationUsers,
-	})
+	// 关注列表获取成功
+	response.GetFollowListSucceeded(c, relationUsers)
 }

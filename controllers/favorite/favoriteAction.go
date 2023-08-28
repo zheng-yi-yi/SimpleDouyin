@@ -12,38 +12,40 @@ var FavoriteService services.FavoriteService
 
 // FavoriteAction ，登录用户对视频的点赞和取消点赞操作
 func FavoriteAction(c *gin.Context) {
-	// 获取当前用户
-	userId := c.GetUint("userID")
-	if userId == 0 {
-		response.Failed(c, "用户不存在")
-		return
-	}
-	actionType := c.Query("action_type")
 	video_id, err := strconv.ParseUint(c.Query("video_id"), 10, 64)
 	if err != nil {
-		response.Failed(c, "获取到非法的视频ID")
+		// 视频id参数类型转换失败
+		response.VideoIdConversionError(c)
 		return
 	}
+	userId := c.Value("userID").(uint)
+	actionType := c.Query("action_type")
 	// 判断操作是否合法
-	if actionType != "1" && actionType != "2" {
-		response.Failed(c, "非法操作")
-		return
-	}
-	// 点赞操作
-	if actionType == "1" {
+	switch actionType {
+	case "1":
+		// 点赞操作
 		err := FavoriteService.AddLike(userId, uint(video_id))
 		if err != nil {
-			response.Failed(c, err.Error())
+			// 点赞失败
+			response.LikeActionError(c)
 			return
 		}
-		response.Success(c, "操作成功")
+		// 点赞成功
+		response.LikeActionSucceeded(c)
 		return
-	}
-	// 取消赞操作
-	err = FavoriteService.CancelLike(userId, uint(video_id))
-	if err != nil {
-		response.Failed(c, err.Error())
+	case "2":
+		// 取消赞操作
+		err := FavoriteService.CancelLike(userId, uint(video_id))
+		if err != nil {
+			// 取消赞失败
+			response.CancelLikeError(c)
+			return
+		}
+		// 取消赞成功
+		response.UnlikeActionSucceeded(c)
 		return
+	default:
+		// 操作不合法
+		response.UnsuccessfulAction(c)
 	}
-	response.Success(c, "操作成功")
 }

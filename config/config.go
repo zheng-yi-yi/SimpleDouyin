@@ -7,6 +7,7 @@ const (
 	VIDEO_STREAM_BATCH_SIZE = 30                    // 每次获取视频流的数量限制
 	DATETIME_FORMAT         = "2006-01-02 15:04:05" // 固定的时间格式
 	SHORT_DATE_FORMAT       = "01-02"               // 短日期格式的字符串
+	AUTH_KEY                = "Douyin"              // JWT 密钥
 )
 
 var (

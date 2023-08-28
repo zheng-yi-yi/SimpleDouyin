@@ -1,39 +1,30 @@
 package video
 
 import (
-	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/zheng-yi-yi/simpledouyin/config"
 	"github.com/zheng-yi-yi/simpledouyin/controllers/response"
+	"github.com/zheng-yi-yi/simpledouyin/models"
 )
 
 // 获取用户发布视频列表的处理函数
 func PublishList(c *gin.Context) {
-	// 从上下文中获取已经鉴权的用户ID。
-	userId := c.GetUint("userID")
-	// 如果用户ID为0，表示用户不存在或鉴权失败，会返回相应的错误响应。
-	if userId == 0 {
-		c.JSON(http.StatusOK, response.VideoListResponse{
-			Response: response.Response{
-				StatusCode: 1,
-				StatusMsg:  "不存在该用户",
-			},
-			VideoList: []response.Video{},
-		})
+	// 当前用户
+	userId := c.Value("userID").(uint)
+	// 要查询的用户id
+	query_user_id, err := strconv.ParseUint(c.Query("user_id"), 10, 64)
+	if err != nil {
+		// 用户id参数类型转换失败
+		response.UserIdConversionError(c)
 		return
 	}
-	// 调用 service 层中的方法，获取用户发布的视频列表。
-	userPublishList := VideoService.UserPublishList(userId)
+	// 获取用户发布的视频列表。
+	userPublishList := VideoService.UserPublishList(uint(query_user_id))
 	// 如果用户发布列表为空，返回一个空的成功响应。
 	if len(userPublishList) == 0 {
-		c.JSON(http.StatusOK, response.VideoListResponse{
-			Response: response.Response{
-				StatusCode: 0,
-				StatusMsg:  "success",
-			},
-			VideoList: []response.Video{},
-		})
+		response.GetPublishListSuccess(c, []response.Video{})
 		return
 	}
 	// 创建视频列表：遍历用户发布列表，将每个视频对象映射到一个新的视频对象，同时进行一些字段的转换和处理。
@@ -46,7 +37,7 @@ func PublishList(c *gin.Context) {
 				Name:           userPublishList[i].User.UserName,
 				FollowCount:    int64(userPublishList[i].User.FollowCount),
 				FollowerCount:  int64(userPublishList[i].User.FollowerCount),
-				IsFollow:       false,
+				IsFollow:       models.IsFollow(userId, uint(query_user_id)),
 				Avatar:         userPublishList[i].User.Avatar,
 				Background:     userPublishList[i].User.BackgroundImage,
 				Signature:      userPublishList[i].User.Signature,
@@ -58,16 +49,10 @@ func PublishList(c *gin.Context) {
 			CoverUrl:      config.SERVER_RESOURCES + userPublishList[i].CoverUrl,
 			FavoriteCount: userPublishList[i].FavoriteCount,
 			CommentCount:  userPublishList[i].CommentCount,
-			IsFavorite:    false,
+			IsFavorite:    models.IsFavorite(userId, uint(query_user_id)),
 			Title:         userPublishList[i].Description,
 		})
 	}
 	// 最后，返回带有视频列表的成功响应。
-	c.JSON(http.StatusOK, response.VideoListResponse{
-		Response: response.Response{
-			StatusCode: 0,
-			StatusMsg:  "success",
-		},
-		VideoList: videoList,
-	})
+	response.GetPublishListSuccess(c, videoList)
 }
