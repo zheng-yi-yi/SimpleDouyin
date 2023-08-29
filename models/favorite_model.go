@@ -7,6 +7,6 @@ type Favorite struct {
 	VideoId uint `gorm:"not null; comment:视频ID"`
 	Status  uint `gorm:"not null; comment:0取消点赞,1点赞(默认1)"`
 	// 定义外键关系
-	User  User  `gorm:"foreignKey:UserId;  references:ID;"`
-	Video Video `gorm:"foreignKey:VideoId; references:ID;"`
+	User  User  `gorm:"foreignKey:UserId;  references:ID; comment:点赞用户的信息"`
+	Video Video `gorm:"foreignKey:VideoId; references:ID; comment:点赞视频的信息"`
 }

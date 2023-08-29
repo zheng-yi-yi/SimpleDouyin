@@ -15,5 +15,5 @@ type Video struct {
 	Description   string    `gorm:"not null; comment:视频描述"`
 	CreatedAt     time.Time `gorm:"not null; comment:视频发布日期"`
 	// 定义外键关系
-	User User `gorm:"foreignKey:UserId; references:ID; comment:视频作者信息"`
+	User User `gorm:"foreignKey:UserId; references:ID; comment:作者信息"`
 }

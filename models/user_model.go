@@ -15,6 +15,6 @@ type User struct {
 	TotalFavorited  string `gorm:"not null; comment:获赞数量"`
 	WorkCount       int64  `gorm:"not null; comment:作品数"`
 	// 定义外键关系
-	Video   []Video   `gorm:"foreignKey:UserId; references:ID; comment:视频作者信息"`
+	Video   []Video   `gorm:"foreignKey:UserId; references:ID; comment:视频信息"`
 	Comment []Comment `gorm:"foreignKey:UserId; references:ID; comment:评论信息"`
 }
