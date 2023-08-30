@@ -2,7 +2,6 @@ package utils
 
 import (
 	"fmt"
-	"log"
 	"mime/multipart"
 	"os"
 	"path/filepath"
@@ -90,13 +89,19 @@ func GetVideoName(userId uint) string {
 	return filename
 }
 
-// GetCoverName 根据用户ID生成封面图片的文件名
+// GetCoverName ， 根据用户ID生成封面图片名称
 func GetCoverName(userId uint) string {
+	// 调用 models 包中的 GetVideoCount 函数，获取用户的视频数量和可能的错误
 	VideoCount, err := models.GetVideoCount(userId)
+
+	// 如果获取视频数量时发生错误
 	if err != nil {
-		log.Printf("无法获取用户的视频个数")
-		return ""
+		VideoCount = 0
 	}
+
+	// 使用格式化字符串生成封面图片文件名，格式为 "用户ID_视频数量+1.png"
 	coverName := fmt.Sprintf("%d_%d.png", userId, VideoCount+1)
+
+	// 返回生成的封面图片文件名
 	return coverName
 }
