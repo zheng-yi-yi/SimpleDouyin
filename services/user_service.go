@@ -24,7 +24,6 @@ func (userService *UserService) Register(username, password string) (models.User
 	user = models.User{
 		UserName:        username,
 		PassWord:        password,
-		Status:          0,
 		FollowCount:     0,
 		FollowerCount:   0,
 		FavoriteCount:   0,
