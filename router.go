@@ -18,12 +18,12 @@ func initRouter(r *gin.Engine) {
 	r.StaticFile("/favicon.ico", "./public/favicon.ico")
 	apiRouter := r.Group("/douyin")
 	// fundamental features：
-	apiRouter.GET("/feed/", video.Feed)                                    //  视频流
-	apiRouter.POST("/user/register/", user.Register)                       // 用户注册
-	apiRouter.POST("/user/login/", user.Login)                             // 用户登录
-	apiRouter.GET("/user/", middlewares.Auth(), user.UserInfo)             // 用户信息
-	apiRouter.POST("/publish/action/", middlewares.Auth(), video.Publish)  // 视频投稿
-	apiRouter.GET("/publish/list/", middlewares.Auth(), video.PublishList) // 发布列表
+	apiRouter.GET("/feed/", video.Feed)                                              //  视频流
+	apiRouter.POST("/user/register/", user.Register)                                 // 用户注册
+	apiRouter.POST("/user/login/", user.Login)                                       // 用户登录
+	apiRouter.GET("/user/", middlewares.Auth(), user.UserInfo)                       // 用户信息
+	apiRouter.POST("/publish/action/", middlewares.UserPublishAuth(), video.Publish) // 视频投稿
+	apiRouter.GET("/publish/list/", middlewares.Auth(), video.PublishList)           // 发布列表
 	// Extended Feature 1: Interactivity
 	apiRouter.POST("/favorite/action/", middlewares.Auth(), favorite.FavoriteAction) // 点赞操作
 	apiRouter.GET("/favorite/list/", middlewares.Auth(), favorite.FavoriteList)      // 喜欢列表

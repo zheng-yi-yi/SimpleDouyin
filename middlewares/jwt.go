@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"log"
 	"net/http"
 	"time"
 
@@ -83,6 +84,44 @@ func Auth() gin.HandlerFunc {
 			}
 		}
 		c.JSON(http.StatusInternalServerError, AuthFailResponse{StatusCode: 1, StatusMsg: CheckFailed})
+		c.Abort()
+	}
+}
+
+// UserPublishAuth , 用户发布视频前进行用户验证
+// 由于客户端提交表单数据时，
+// 包含的token字段是在请求体中以 multipart/form-data 的方式进行传递
+// 因此需要使用 c.PostForm 方法来获取表单数据中的字段值
+func UserPublishAuth() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// 获取token
+		tokenString := c.PostForm("token")
+		if len(tokenString) == 0 {
+			c.Set("userID", uint(0))
+			c.Next()
+			return
+		}
+		// 解析 token
+		token, err := jwt.ParseWithClaims(tokenString, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
+			return JwtKey, nil
+		})
+		if err != nil {
+			log.Println("token解析失败")
+			c.JSON(http.StatusBadRequest, AuthFailResponse{StatusCode: 1, StatusMsg: ParseTokenFailed})
+			c.Abort()
+			return
+		}
+		// 校验鉴权的声明
+		if token != nil {
+			claims, ok := token.Claims.(*MyClaims)
+			if ok && token.Valid {
+				c.Set("userID", claims.UserID)
+				c.Next()
+				return
+			}
+		}
+		log.Println("校验鉴权失败")
+		c.JSON(http.StatusBadRequest, AuthFailResponse{StatusCode: 1, StatusMsg: CheckFailed})
 		c.Abort()
 	}
 }
