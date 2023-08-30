@@ -20,7 +20,7 @@ func IsFavorite(userId, videoId uint) bool {
 	// 创建一个 Favorite 结构体实例，用于存储查询结果
 	var favorite Favorite
 	// 在数据库中查找匹配的点赞记录
-	result := config.Database.Where("user_id = ? AND video_id = ? AND status = 1", userId, videoId).First(&favorite)
+	result := config.Database.Where("user_id = ? AND video_id = ?", userId, videoId).First(&favorite)
 	// 检查是否找到匹配的点赞记录
 	return result.Error == nil
 }
