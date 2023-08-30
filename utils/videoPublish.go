@@ -19,16 +19,25 @@ func GetVideoDst(file *multipart.FileHeader, userId uint) string {
 	return videoDst
 }
 
-// GetVideoPath 根据文件信息和用户ID生成视频文件的完整本地路径。
+// GetVideoPath ， 根据视频文件和用户ID获取视频文件路径
 func GetVideoPath(file *multipart.FileHeader, userId uint) string {
+	// 获取当前工作目录
 	pwd, getPwdErr := os.Getwd()
 	if getPwdErr != nil {
 		fmt.Println(getPwdErr.Error())
 		return ""
 	}
+
+	// 获取父目录
 	parentDir := filepath.Dir(pwd)
+
+	// 获取视频目标路径
 	videoDst := GetVideoDst(file, userId)
+
+	// 将父目录与视频目标路径合并得到完整的视频文件路径
 	videoPath := filepath.Join(parentDir, videoDst)
+
+	// 返回视频文件路径
 	return videoPath
 }
 
