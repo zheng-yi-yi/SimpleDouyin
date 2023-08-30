@@ -15,7 +15,7 @@ func (s *FavoriteService) IsFavorite(userId, videoId uint) bool {
 	var favorite models.Favorite
 
 	// 在数据库中查找匹配的点赞记录
-	result := config.Database.Where("user_id = ? AND video_id = ? AND status = 1", userId, videoId).First(&favorite)
+	result := config.Database.Where("user_id = ? AND video_id = ?", userId, videoId).First(&favorite)
 
 	// 检查是否找到匹配的点赞记录
 	return result.Error == nil
