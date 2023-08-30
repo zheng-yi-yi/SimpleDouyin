@@ -111,7 +111,7 @@ func (s *FavoriteService) GetFavoriteList(userId uint) ([]uint, error) {
 	var favorites []models.Favorite
 
 	// 查询该用户点赞的所有记录
-	result := config.Database.Where("user_id = ? AND status = ?", userId, 1).Find(&favorites)
+	result := config.Database.Where("user_id = ?", userId).Find(&favorites)
 	if result.Error != nil {
 		return nil, result.Error
 	}
