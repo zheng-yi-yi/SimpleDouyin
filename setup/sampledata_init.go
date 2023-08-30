@@ -114,21 +114,21 @@ var initialVideos = []models.Video{
 		CreatedAt:     time.Now(),
 	},
 	{
-		UserId:        5,                                                         // 用户id
-		PlayUrl:       "videos/5_1.mp4",                                          // 视频地址
-		CoverUrl:      "images/5_1.png",                                          // 封面图地址
-		FavoriteCount: 5,                                                         // 点赞数量
-		CommentCount:  3,                                                         // 评论数量
-		Description:   "邀你观看2023稀土开发者大会!11场论坛，60位技术大咖，涵盖AIGC与大模型、大前端、音视频等前沿技术资讯", // 视频标题
+		UserId:        5,                // 用户id
+		PlayUrl:       "videos/5_1.mp4", // 视频地址
+		CoverUrl:      "images/5_1.png", // 封面图地址
+		FavoriteCount: 5,                // 点赞数量
+		CommentCount:  3,                // 评论数量
+		Description:   "而我独缺你一生的了解 #戏曲", // 视频标题
 		CreatedAt:     time.Now(),
 	},
 	{
-		UserId:        3,                                 // 用户id
-		PlayUrl:       "videos/3_1.mp4",                  // 视频地址
-		CoverUrl:      "images/3_1.png",                  // 封面图地址
-		FavoriteCount: 4,                                 // 点赞数量
-		CommentCount:  2,                                 // 评论数量
-		Description:   "不看到最后一秒你都不知道会看到谁。#海贼王 #路飞 #超燃混剪", // 视频标题
+		UserId:        3,                      // 用户id
+		PlayUrl:       "videos/3_1.mp4",       // 视频地址
+		CoverUrl:      "images/3_1.png",       // 封面图地址
+		FavoriteCount: 4,                      // 点赞数量
+		CommentCount:  2,                      // 评论数量
+		Description:   "哪有什么突然好想你 明明就心里一直有你.", // 视频标题
 		CreatedAt:     time.Now(),
 	},
 	{
@@ -186,12 +186,12 @@ var initialVideos = []models.Video{
 		CreatedAt:     time.Now(),
 	},
 	{
-		UserId:        5,                                      // 用户id
-		PlayUrl:       "videos/5_2.mp4",                       // 视频地址
-		CoverUrl:      "images/5_2.png",                       // 封面图地址
-		FavoriteCount: 6,                                      // 点赞数量
-		CommentCount:  4,                                      // 评论数量
-		Description:   "离开我以后我会习惯自卑，明天再偶遇我也不敢偷望你 #离开以后 # 张学友", // 视频标题
+		UserId:        5,                            // 用户id
+		PlayUrl:       "videos/5_2.mp4",             // 视频地址
+		CoverUrl:      "images/5_2.png",             // 封面图地址
+		FavoriteCount: 6,                            // 点赞数量
+		CommentCount:  4,                            // 评论数量
+		Description:   "文有太极安天下，武有八极定乾坤 #太极拳 #国风少年", // 视频标题
 		CreatedAt:     time.Now(),
 	},
 }
@@ -266,10 +266,11 @@ var initialComments = []models.Comment{
 	{UserId: 2, VideoId: 1, CreatedAt: time.Now(), Content: "好啦好啦，都在歌单里啦"},
 	{UserId: 4, VideoId: 1, CreatedAt: time.Now(), Content: "爷青回！！！"},
 	{UserId: 6, VideoId: 1, CreatedAt: time.Now(), Content: "好活，当赏"},
-	{UserId: 5, VideoId: 2, CreatedAt: time.Now(), Content: "来学习了"},
-	{UserId: 6, VideoId: 2, CreatedAt: time.Now(), Content: "真不错！"},
-	{UserId: 2, VideoId: 3, CreatedAt: time.Now(), Content: "敢问阁下，海贼诸多反派中最喜欢哪个？"},
-	{UserId: 6, VideoId: 3, CreatedAt: time.Now(), Content: "唯一差评，没有罗！！！"},
+	{UserId: 5, VideoId: 2, CreatedAt: time.Now(), Content: "这竟然是你唱的"},
+	{UserId: 6, VideoId: 2, CreatedAt: time.Now(), Content: "这个戏腔绝了"},
+	{UserId: 6, VideoId: 2, CreatedAt: time.Now(), Content: "兰亭序：“而我独缺你一生的了解”\n七里香：“你是我唯一想要的了解”"},
+	{UserId: 2, VideoId: 3, CreatedAt: time.Now(), Content: "“不要因为廉价的新鲜感放弃长久的陪伴”"},
+	{UserId: 6, VideoId: 3, CreatedAt: time.Now(), Content: "幸好思念无声"},
 	{UserId: 2, VideoId: 4, CreatedAt: time.Now(), Content: "说走就走的旅行..."},
 	{UserId: 1, VideoId: 4, CreatedAt: time.Now(), Content: "这首歌好像在哪里听过！"},
 	{UserId: 5, VideoId: 4, CreatedAt: time.Now(), Content: "好久没出去玩了，走起"},
@@ -283,10 +284,10 @@ var initialComments = []models.Comment{
 	{UserId: 3, VideoId: 8, CreatedAt: time.Now(), Content: "落霞与孤鹜齐飞，秋水共长天一色"},
 	{UserId: 5, VideoId: 8, CreatedAt: time.Now(), Content: "为天地立心，为生民立命，为往圣继绝学，为万世开太平"},
 	{UserId: 5, VideoId: 9, CreatedAt: time.Now(), Content: "夕阳洒在世界的尽头"},
-	{UserId: 1, VideoId: 10, CreatedAt: time.Now(), Content: "好想再看一次他的演唱会"},
-	{UserId: 4, VideoId: 10, CreatedAt: time.Now(), Content: "还得是张学友"},
-	{UserId: 3, VideoId: 10, CreatedAt: time.Now(), Content: "经典"},
-	{UserId: 2, VideoId: 10, CreatedAt: time.Now(), Content: "满满的回忆"},
+	{UserId: 1, VideoId: 10, CreatedAt: time.Now(), Content: "运动孩多多少少有点不合群"},
+	{UserId: 4, VideoId: 10, CreatedAt: time.Now(), Content: "这圆画的好圆"},
+	{UserId: 3, VideoId: 10, CreatedAt: time.Now(), Content: "和我体育老师教的好像一样，但又不怎么一样"},
+	{UserId: 2, VideoId: 10, CreatedAt: time.Now(), Content: "行云流水"},
 }
 
 func initComments(db *gorm.DB) {
