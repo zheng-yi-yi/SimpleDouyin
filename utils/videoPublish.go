@@ -73,13 +73,20 @@ func GetCoverPath(file *multipart.FileHeader, userId uint) string {
 	return coverPath
 }
 
-// GetVideoName 根据userId_用户发布的视频数量+1
+// GetVideoName ， 根据用户ID获取视频名称
 func GetVideoName(userId uint) string {
+	// 调用 models 包中的 GetVideoCount 函数，获取用户的视频数量和可能的错误
 	VideoCount, err := models.GetVideoCount(userId)
+
+	// 如果获取视频数量时发生错误
 	if err != nil {
-		VideoCount = 0
+		VideoCount = 0 // 将视频数量设置为0
 	}
+
+	// 使用格式化字符串生成视频文件名，格式为 "用户ID_视频数量+1"
 	filename := fmt.Sprintf("%d_%d", userId, VideoCount+1)
+
+	// 返回生成的视频文件名
 	return filename
 }
 
