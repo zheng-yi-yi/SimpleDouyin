@@ -36,14 +36,11 @@ func GetVideoPath(file *multipart.FileHeader, userId uint) string {
 		return ""
 	}
 
-	// 获取父目录
-	parentDir := filepath.Dir(pwd)
-
 	// 获取视频目标路径
 	videoDst := GetVideoDst(file, userId)
 
-	// 将父目录与视频目标路径合并得到完整的视频文件路径
-	videoPath := filepath.Join(parentDir, videoDst)
+	// 将当前工作目录与视频目标路径合并得到完整的视频文件路径
+	videoPath := filepath.Join(pwd, videoDst)
 
 	// 返回视频文件路径
 	return videoPath
@@ -75,14 +72,11 @@ func GetCoverPath(file *multipart.FileHeader, userId uint) string {
 		return ""
 	}
 
-	// 获取父目录
-	parentDir := filepath.Dir(pwd)
-
 	// 获取封面图片目标路径
 	coverDst := GetCoverDst(file, userId)
 
-	// 将父目录与封面图片目标路径合并得到完整的封面图片文件路径
-	coverPath := filepath.Join(parentDir, coverDst)
+	// 将当前工作目录与封面图片目标路径合并得到完整的封面图片文件路径
+	coverPath := filepath.Join(pwd, coverDst)
 
 	// 返回封面图片文件路径
 	return coverPath

@@ -53,15 +53,14 @@ func (videoService *VideoService) SaveVideoFile(c *gin.Context, file *multipart.
 		log.Printf("视频文件保存失败: %s", err)
 		return err
 	}
+
 	// 获取视频文件和封面图片文件的本地路径
 	videoPath := utils.GetVideoPath(file, userId)
 	coverPath := utils.GetCoverPath(file, userId)
+
 	// 使用 Ffmpeg 函数生成封面图片
-	if err := utils.Ffmpeg(videoPath, coverPath); err != nil {
-		// 视频封面生成失败
-		log.Printf("视频封面生成失败: %s", err)
-		return err
-	}
+	utils.Ffmpeg(videoPath, coverPath)
+
 	// 生成 playUrl 与 coverUrl
 	fileExt := filepath.Ext(file.Filename)
 	playUrl := "videos/" + utils.GetVideoName(userId) + fileExt
