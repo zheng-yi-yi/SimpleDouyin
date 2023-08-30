@@ -35,6 +35,16 @@ func IncrementUserLikeCount(userID uint) error {
 	return config.Database.Model(&User{}).Where("id = ?", userID).Update("favorite_count", gorm.Expr("favorite_count + ?", 1)).Error
 }
 
+// IncrementAuthorTotalFavorited 根据视频作者的id来将其获赞总数加一
+func IncrementAuthorTotalFavorited(userID uint) error {
+	return config.Database.Model(&User{}).Where("id = ?", userID).Update("total_favorited", gorm.Expr("total_favorited + ?", 1)).Error
+}
+
+// DecrementAuthorTotalFavorited 根据视频作者的id来将其获赞总数减一
+func DecrementAuthorTotalFavorited(userID uint) error {
+	return config.Database.Model(&User{}).Where("id = ?", userID).Update("total_favorited", gorm.Expr("total_favorited - ?", 1)).Error
+}
+
 // DecrementUserLikeCount 减少用户的点赞数。
 func DecrementUserLikeCount(userID uint) error {
 	return config.Database.Model(&User{}).Where("id = ?", userID).Update("favorite_count", gorm.Expr("favorite_count - ?", 1)).Error

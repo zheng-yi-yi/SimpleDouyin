@@ -3,6 +3,7 @@ package services
 import (
 	"github.com/zheng-yi-yi/simpledouyin/config"
 	"github.com/zheng-yi-yi/simpledouyin/models"
+	"gorm.io/gorm"
 )
 
 type FavoriteService struct {
@@ -20,50 +21,39 @@ func (s *FavoriteService) IsFavorite(userId, videoId uint) bool {
 	return result.Error == nil
 }
 
-// AddLike ，判断用户是否点赞了该视频
+// AddLike ，点赞操作
 func (s *FavoriteService) AddLike(userId, videoId uint) error {
 	// 获取数据库连接实例
 	db := config.Database
 
-	// 检查之前是否有记录存在
-	existingLike := models.Favorite{}
-	result := db.Where("user_id = ? AND video_id = ?", userId, videoId).First(&existingLike)
-	if result.Error == nil { // 找到现有记录
-		if existingLike.Status == 0 { // 之前是取消点赞状态
-			// 更新状态为点赞
-			result := db.Model(&existingLike).Update("status", 1)
-			if result.Error != nil {
-				return result.Error
-			}
-			return nil
-		}
-		// 已经存在点赞记录，不需要再次添加
-		return nil
-	}
-
-	// 创建点赞记录实例
-	newLike := models.Favorite{
+	// 新建一条点赞记录
+	favorite := models.Favorite{
 		UserId:  userId,
 		VideoId: videoId,
-		Status:  1, // 点赞状态
+	}
+	result := db.Create(&favorite)
+	if result.Error != nil {
+		return result.Error
 	}
 
-	// 插入新的点赞记录
-	if err := db.Create(&newLike).Error; err != nil {
+	// 将该视频的获赞总数加一
+	if err := models.IncrementVideoLikeCount(uint(videoId)); err != nil {
 		return err
 	}
 
-	// 获取该点赞视频的用户id
+	// 将本次点赞用户的点赞数加一
+	if err := models.IncrementUserLikeCount(userId); err != nil {
+		return err
+	}
+
+	// 根据该视频id来获取其作者id
 	author_id, err := models.GetAuthorIDForVideo(uint(videoId))
 	if err != nil {
 		return err
 	}
-	// 成功点赞后，调用 IncrementUserLikeCount 函数，将用户的点赞数加一
-	if err := models.IncrementUserLikeCount(author_id); err != nil {
-		return err
-	}
-	// 成功点赞后，调用 IncrementVideoLikeCount 函数，将视频的获赞数加一
-	if err := models.IncrementVideoLikeCount(uint(videoId)); err != nil {
+
+	// 将视频作者的获赞总数加一
+	if err := models.IncrementAuthorTotalFavorited(author_id); err != nil {
 		return err
 	}
 
@@ -75,37 +65,41 @@ func (s *FavoriteService) CancelLike(userId, videoId uint) error {
 	// 获取数据库连接实例
 	db := config.Database
 
-	// 创建 Favorite 对象用于存储查询结果
-	var favorite models.Favorite
-
-	// 在数据库中查找匹配的点赞记录
-	err := db.Where("user_id = ? AND video_id = ? AND status = 1", userId, videoId).First(&favorite).Error
-	if err != nil {
-		return err // 如果发生错误，返回错误信息
+	// 查找要删除的现有点赞关系
+	var existingFavorite models.Favorite
+	result := db.Where("user_id = ? AND video_id = ?", userId, videoId).First(&existingFavorite)
+	if result.Error != nil {
+		if result.Error == gorm.ErrRecordNotFound {
+			// 如果点赞关系不存在，则无错误地返回
+			return nil
+		}
+		return result.Error
 	}
 
-	// 将点赞状态设为 0，表示取消点赞
-	favorite.Status = 0
-
-	// 更新数据库中的点赞记录
-	err = db.Save(&favorite).Error
-	if err != nil {
-		return err // 如果更新发生错误，返回错误信息
+	// 删除现有的点赞关系
+	result = db.Delete(&existingFavorite)
+	if result.Error != nil {
+		return result.Error
 	}
 
-	// 获取该点赞视频的用户id
+	// 成功取消点赞后，调用 DecrementUserLikeCount 函数，将用户的点赞数减一
+	if err := models.DecrementUserLikeCount(userId); err != nil {
+		return err
+	}
+
+	// 成功取消点赞后，调用 DecrementVideoLikeCount 函数，将视频的获赞数加一
+	if err := models.DecrementVideoLikeCount(uint(videoId)); err != nil {
+		return err
+	}
+
+	// 获取该取消赞的视频作者id
 	author_id, err := models.GetAuthorIDForVideo(uint(videoId))
 	if err != nil {
 		return err
 	}
 
-	// 成功取消点赞后，调用 DecrementUserLikeCount 函数，将用户的点赞数减一
-	if err := models.DecrementUserLikeCount(author_id); err != nil {
-		return err
-	}
-
-	// 成功取消点赞后，调用 IncrementVideoLikeCount 函数，将视频的获赞数加一
-	if err := models.DecrementVideoLikeCount(uint(videoId)); err != nil {
+	// 将视频作者的获赞总数减一
+	if err := models.DecrementAuthorTotalFavorited(author_id); err != nil {
 		return err
 	}
 
