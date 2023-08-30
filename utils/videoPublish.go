@@ -10,12 +10,21 @@ import (
 	"github.com/zheng-yi-yi/simpledouyin/models"
 )
 
-// GetVideoDst 根据文件信息和用户ID生成视频文件的目标路径。
+// GetVideoDst ， 根据视频文件和用户ID获取视频目标路径
 func GetVideoDst(file *multipart.FileHeader, userId uint) string {
+	// 获取视频名称
 	videoName := GetVideoName(userId)
+
+	// 获取文件扩展名
 	fileExt := filepath.Ext(file.Filename)
+
+	// 根据视频名称和文件扩展名生成新的文件名
 	filename := videoName + fileExt
+
+	// 将文件名与视频文件目录路径合并得到完整的视频目标路径
 	videoDst := filepath.Join("./public/videos/", filename)
+
+	// 返回视频目标路径
 	return videoDst
 }
 
