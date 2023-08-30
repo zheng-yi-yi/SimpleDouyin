@@ -59,16 +59,25 @@ func GetCoverDst(file *multipart.FileHeader, userId uint) string {
 	return coverDst
 }
 
-// GetCoverPath 根据文件信息和用户ID生成封面图片文件的完整本地路径。
+// GetCoverPath ， 根据视频文件和用户ID获取封面图片文件路径
 func GetCoverPath(file *multipart.FileHeader, userId uint) string {
+	// 获取当前工作目录
 	pwd, getPwdErr := os.Getwd()
 	if getPwdErr != nil {
 		fmt.Println(getPwdErr.Error())
 		return ""
 	}
+
+	// 获取父目录
 	parentDir := filepath.Dir(pwd)
+
+	// 获取封面图片目标路径
 	coverDst := GetCoverDst(file, userId)
+
+	// 将父目录与封面图片目标路径合并得到完整的封面图片文件路径
 	coverPath := filepath.Join(parentDir, coverDst)
+
+	// 返回封面图片文件路径
 	return coverPath
 }
 
