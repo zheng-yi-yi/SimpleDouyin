@@ -49,13 +49,20 @@ func GetVideoPath(file *multipart.FileHeader, userId uint) string {
 	return videoPath
 }
 
-// GetCoverDst 根据文件信息和用户ID生成封面图片文件的目标路径。
+// GetCoverDst ， 根据文件信息和用户ID生成封面图片文件的目标路径。
 func GetCoverDst(file *multipart.FileHeader, userId uint) string {
+	// 调用 GetCoverName 函数，根据用户ID生成封面图片文件名
 	coverName := GetCoverName(userId)
+
+	// 如果封面图片文件名为空
 	if coverName == "" {
-		return ""
+		return "" // 返回空字符串表示无法生成封面图片文件目标路径
 	}
+
+	// 使用格式化字符串生成封面图片文件目标路径，格式为 "./public/images/文件名"
 	coverDst := filepath.Join("./public/images/", coverName)
+
+	// 返回生成的封面图片文件目标路径
 	return coverDst
 }
 
