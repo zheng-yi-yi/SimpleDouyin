@@ -1,7 +1,6 @@
 package services
 
 import (
-	"errors"
 	"time"
 
 	"github.com/zheng-yi-yi/simpledouyin/config"
@@ -14,24 +13,28 @@ type CommentService struct {
 
 // CreateComment: 创建新评论
 func (s *CommentService) CreateComment(video_id uint, content string, user_id uint) (response.Comment, error) {
-	if len(content) == 0 {
-		return response.Comment{}, errors.New("不能插入空评论！")
-	}
+	// 新建一条新评论记录
 	comment := models.Comment{
 		VideoId:   video_id,
 		Content:   content,
 		UserId:    user_id,
 		CreatedAt: time.Now(),
-		// Cancel:    0,
 	}
 	result := config.Database.Create(&comment)
+	if result.Error != nil {
+		return response.Comment{}, result.Error
+	}
+
+	// 如果添加评论成功，则增加该视频的评论总数
 	if err := models.IncrementCommentCount(uint(video_id)); err != nil {
 		return response.Comment{}, err
 	}
+
+	// 评论成功则返回评论内容（响应）
 	userInfo, _ := models.FetchData(user_id)
 	NewComment := response.Comment{
-		Id: int64(comment.ID), // 评论id
-		User: response.User{ // 评论用户
+		Id: int64(comment.ID),
+		User: response.User{
 			Id:     int64(userInfo.ID),
 			Name:   userInfo.UserName,
 			Avatar: userInfo.Avatar,
@@ -60,9 +63,14 @@ func (s *CommentService) GetCommentById(comment_id int64) models.Comment {
 
 // 根据用户ID、视频ID和评论ID，定位并删除对应评论
 func (s *CommentService) DeleteCommentById(userId, videoId, commentId uint) error {
+	// 删除评论
 	result := config.Database.Where("user_id=? and video_id=? and id=?", userId, videoId, commentId).Delete(&models.Comment{})
+	if result.Error != nil {
+		return result.Error
+	}
+	// 成功删除评论后，就减少该视频的评论总数
 	if err := models.DecreaseCommentCount(uint(videoId)); err != nil {
 		return err
 	}
-	return result.Error
+	return nil
 }
