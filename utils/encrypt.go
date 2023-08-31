@@ -10,3 +10,9 @@ const CustomCost int = 16
 func EncryptPassword(password string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(password), CustomCost)
 }
+
+// CheckPasswordValidity 将加密后的密码和用户提供的密码进行比较
+func CheckPasswordValidity(encryptedPassword, userPassword string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(encryptedPassword), []byte(userPassword))
+	return err == nil
+}
