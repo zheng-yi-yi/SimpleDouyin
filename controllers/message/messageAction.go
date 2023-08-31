@@ -15,7 +15,7 @@ func MessageAction(c *gin.Context) {
 	// 当前登录的用户
 	from_user_id := c.Value("userID").(uint)
 	// 要查询的对方用户id
-	to_user_id, err := strconv.ParseUint(c.Query("user_id"), 10, 64)
+	to_user_id, err := strconv.ParseUint(c.Query("to_user_id"), 10, 64)
 	if err != nil {
 		response.UserIdConversionError(c) // 用户id参数类型转换失败
 		return
