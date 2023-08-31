@@ -48,11 +48,17 @@ func (userService *UserService) Register(username, password string) (models.User
 // 用户登录服务
 func (userService *UserService) Login(username, password string) (models.User, error) {
 	var user models.User
-	err := config.Database.Where("user_name = ? AND pass_word = ?", username, password).First(&user).Error
+	err := config.Database.Where("user_name = ?", username).First(&user).Error
 	if err == gorm.ErrRecordNotFound {
-		return models.User{}, errors.New("用户名或密码错误")
+		return models.User{}, errors.New("用户名不存在")
 	} else if err != nil {
 		return models.User{}, err
 	}
-	return user, nil
+
+	// 验证用户密码
+	if utils.CheckPasswordValidity(user.PassWord, password) {
+		return user, nil
+	} else {
+		return models.User{}, errors.New("用户密码错误")
+	}
 }
