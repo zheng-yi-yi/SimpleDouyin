@@ -5,15 +5,21 @@ import (
 
 	"github.com/zheng-yi-yi/simpledouyin/config"
 	"github.com/zheng-yi-yi/simpledouyin/models"
+	"github.com/zheng-yi-yi/simpledouyin/utils"
 	"gorm.io/gorm"
 )
+
+func getpwd() []byte {
+	encryptedPassword, _ := utils.EncryptPassword("123456")
+	return encryptedPassword
+}
 
 // ========== 用户表-样例数据 ==========
 
 var initialUsers = []models.User{
 	{
 		UserName:        "User1",                           // 用户名
-		PassWord:        "123456",                          // 密码
+		PassWord:        string(getpwd()),                  // 密码
 		FollowCount:     3,                                 // 关注总数
 		FollowerCount:   5,                                 // 粉丝总数
 		FavoriteCount:   6,                                 // 喜欢数
@@ -25,7 +31,7 @@ var initialUsers = []models.User{
 	},
 	{
 		UserName:        "User2",                           // 用户名
-		PassWord:        "123456",                          // 密码
+		PassWord:        string(getpwd()),                  // 密码
 		FollowCount:     3,                                 // 关注总数
 		FollowerCount:   3,                                 // 粉丝总数
 		FavoriteCount:   7,                                 // 喜欢数
@@ -37,7 +43,7 @@ var initialUsers = []models.User{
 	},
 	{
 		UserName:        "User3",                           // 用户名
-		PassWord:        "123456",                          // 密码
+		PassWord:        string(getpwd()),                  // 密码
 		FollowCount:     4,                                 // 关注总数
 		FollowerCount:   3,                                 // 粉丝总数
 		FavoriteCount:   7,                                 // 喜欢数
@@ -49,7 +55,7 @@ var initialUsers = []models.User{
 	},
 	{
 		UserName:        "User4",                           // 用户名
-		PassWord:        "123456",                          // 密码
+		PassWord:        string(getpwd()),                  // 密码
 		FollowCount:     4,                                 // 关注总数
 		FollowerCount:   4,                                 // 粉丝总数
 		FavoriteCount:   6,                                 // 喜欢数
@@ -61,7 +67,7 @@ var initialUsers = []models.User{
 	},
 	{
 		UserName:        "User5",                           // 用户名
-		PassWord:        "123456",                          // 密码
+		PassWord:        string(getpwd()),                  // 密码
 		FollowCount:     3,                                 // 关注总数
 		FollowerCount:   3,                                 // 粉丝总数
 		FavoriteCount:   6,                                 // 喜欢数
@@ -73,7 +79,7 @@ var initialUsers = []models.User{
 	},
 	{
 		UserName:        "User6",                           // 用户名
-		PassWord:        "123456",                          // 密码
+		PassWord:        string(getpwd()),                  // 密码
 		FollowCount:     4,                                 // 关注总数
 		FollowerCount:   3,                                 // 粉丝总数
 		FavoriteCount:   7,                                 // 喜欢数
