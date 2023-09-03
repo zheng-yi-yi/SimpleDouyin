@@ -4,7 +4,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-const CustomCost int = 16
+const CustomCost int = 8
 
 // EncryptPassword 生成密码哈希，使用自定义的哈希迭代成本（cost）
 func EncryptPassword(password string) ([]byte, error) {
