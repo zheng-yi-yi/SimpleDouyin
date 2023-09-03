@@ -26,13 +26,13 @@ func (ms *MessageService) AddMessage(fromUserID uint, content string, toUserID u
 	return nil
 }
 
-func (MessageService *MessageService) GetMessageList(fromUserID, toUserID uint) ([]models.Message, error) {
+func (MessageService *MessageService) GetMessageListWithTime(fromUserID, toUserID uint, preMsgTime time.Time) ([]models.Message, error) {
 	var messages []models.Message
 
-	// 查询消息记录
-	err := config.Database.Where("from_user_id = ? AND to_user_id = ?", fromUserID, toUserID).
-		Or("from_user_id = ? AND to_user_id = ?", toUserID, fromUserID).
-		Order("id").
+	// 查询消息记录，基于 pre_msg_time 进行查询
+	err := config.Database.Where("((from_user_id = ? AND to_user_id = ?) OR (from_user_id = ? AND to_user_id = ?)) AND create_time > ?",
+		fromUserID, toUserID, toUserID, fromUserID, preMsgTime).
+		Order("create_time").
 		Find(&messages).Error
 
 	if err != nil {

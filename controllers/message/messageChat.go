@@ -2,6 +2,7 @@ package message
 
 import (
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/zheng-yi-yi/simpledouyin/controllers/response"
@@ -17,8 +18,15 @@ func MessageChat(c *gin.Context) {
 		response.ToUserIdConversionError(c) // 对方用户id参数类型转换失败
 		return
 	}
+	// 获取pre_msg_time
+	preMsgTimeUnix, err := strconv.ParseInt(c.Query("pre_msg_time"), 10, 64)
+	if err != nil {
+		response.PreMsgTimeConversionError(c)
+		return
+	}
+	preMsgTime := time.Unix(0, preMsgTimeUnix*int64(time.Millisecond))
 	// 获取消息列表
-	messages, err := MessageService.GetMessageList(from_user_id, uint(to_user_id))
+	messages, err := MessageService.GetMessageListWithTime(from_user_id, uint(to_user_id), preMsgTime)
 	if err != nil {
 		response.GetMessageChatError(c) // 聊天记录获取失败
 		return
