@@ -5,21 +5,17 @@ import (
 
 	"github.com/zheng-yi-yi/simpledouyin/config"
 	"github.com/zheng-yi-yi/simpledouyin/models"
-	"github.com/zheng-yi-yi/simpledouyin/utils"
 	"gorm.io/gorm"
 )
 
-func getpwd() []byte {
-	encryptedPassword, _ := utils.EncryptPassword("123456")
-	return encryptedPassword
-}
+const testUserPassword = "$2a$16$qOVr7vIeEZcah73BCpocV.Sq/m70sK4YusyEIU73TrvEj8YKzH7aK"
 
 // ========== 用户表-样例数据 ==========
 
 var initialUsers = []models.User{
 	{
 		UserName:        "User1",                           // 用户名
-		PassWord:        string(getpwd()),                  // 密码
+		PassWord:        testUserPassword,                  // 密码
 		FollowCount:     3,                                 // 关注总数
 		FollowerCount:   5,                                 // 粉丝总数
 		FavoriteCount:   6,                                 // 喜欢数
@@ -31,7 +27,7 @@ var initialUsers = []models.User{
 	},
 	{
 		UserName:        "User2",                           // 用户名
-		PassWord:        string(getpwd()),                  // 密码
+		PassWord:        testUserPassword,                  // 密码
 		FollowCount:     3,                                 // 关注总数
 		FollowerCount:   3,                                 // 粉丝总数
 		FavoriteCount:   7,                                 // 喜欢数
@@ -43,7 +39,7 @@ var initialUsers = []models.User{
 	},
 	{
 		UserName:        "User3",                           // 用户名
-		PassWord:        string(getpwd()),                  // 密码
+		PassWord:        testUserPassword,                  // 密码
 		FollowCount:     4,                                 // 关注总数
 		FollowerCount:   3,                                 // 粉丝总数
 		FavoriteCount:   7,                                 // 喜欢数
@@ -55,7 +51,7 @@ var initialUsers = []models.User{
 	},
 	{
 		UserName:        "User4",                           // 用户名
-		PassWord:        string(getpwd()),                  // 密码
+		PassWord:        testUserPassword,                  // 密码
 		FollowCount:     4,                                 // 关注总数
 		FollowerCount:   4,                                 // 粉丝总数
 		FavoriteCount:   6,                                 // 喜欢数
@@ -67,7 +63,7 @@ var initialUsers = []models.User{
 	},
 	{
 		UserName:        "User5",                           // 用户名
-		PassWord:        string(getpwd()),                  // 密码
+		PassWord:        testUserPassword,                  // 密码
 		FollowCount:     3,                                 // 关注总数
 		FollowerCount:   3,                                 // 粉丝总数
 		FavoriteCount:   6,                                 // 喜欢数
@@ -79,7 +75,7 @@ var initialUsers = []models.User{
 	},
 	{
 		UserName:        "User6",                           // 用户名
-		PassWord:        string(getpwd()),                  // 密码
+		PassWord:        testUserPassword,                  // 密码
 		FollowCount:     4,                                 // 关注总数
 		FollowerCount:   3,                                 // 粉丝总数
 		FavoriteCount:   7,                                 // 喜欢数
@@ -359,6 +355,10 @@ var initialMessages = []models.Message{
 	{FromUserID: 2, ToUserID: 3, CreateTime: time.Now(), Content: "行，你叫上他们，人多点"},
 	{FromUserID: 3, ToUserID: 2, CreateTime: time.Now(), Content: "已经在约了"},
 	{FromUserID: 2, ToUserID: 3, CreateTime: time.Now(), Content: "OK"},
+	{FromUserID: 3, ToUserID: 2, CreateTime: time.Now(), Content: "你记得带球，我的放学校了"},
+	{FromUserID: 2, ToUserID: 3, CreateTime: time.Now(), Content: "这，我也是..."},
+	{FromUserID: 3, ToUserID: 2, CreateTime: time.Now(), Content: "那就让阿凯带球"},
+	{FromUserID: 2, ToUserID: 3, CreateTime: time.Now(), Content: "ok，我去叫他"},
 }
 
 func initMessages(db *gorm.DB) {
