@@ -50,3 +50,11 @@ func ToUserIdConversionError(c *gin.Context) {
 		StatusMsg:  "对方用户id参数类型转换失败",
 	})
 }
+
+// PreMsgTimeConversionError ， pre_msg_time 参数类型转换失败
+func PreMsgTimeConversionError(c *gin.Context) {
+	c.JSON(http.StatusBadRequest, Response{
+		StatusCode: 1,
+		StatusMsg:  "pre_msg_time参数类型转换失败",
+	})
+}
