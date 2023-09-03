@@ -19,14 +19,19 @@ func MessageChat(c *gin.Context) {
 		return
 	}
 	// 获取pre_msg_time
-	preMsgTimeUnix, err := strconv.ParseInt(c.Query("pre_msg_time"), 10, 64)
-	if err != nil {
-		response.PreMsgTimeConversionError(c)
-		return
+	msgTime := time.Now()
+	pre_msg_time := c.Query("pre_msg_time")
+	if pre_msg_time != "" {
+		preMsgTimeUnix, err := strconv.ParseInt(pre_msg_time, 10, 64)
+		if err != nil {
+			response.PreMsgTimeConversionError(c)
+			return
+		}
+		msgTime = time.Unix(0, preMsgTimeUnix*int64(time.Millisecond))
 	}
-	preMsgTime := time.Unix(0, preMsgTimeUnix*int64(time.Millisecond))
+
 	// 获取消息列表
-	messages, err := MessageService.GetMessageListWithTime(from_user_id, uint(to_user_id), preMsgTime)
+	messages, err := MessageService.GetMessageListWithTime(from_user_id, uint(to_user_id), msgTime)
 	if err != nil {
 		response.GetMessageChatError(c) // 聊天记录获取失败
 		return
