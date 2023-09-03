@@ -21,3 +21,34 @@ func newExpect(t *testing.T) *httpexpect.Expect {
 		},
 	})
 }
+
+// getTestUserIdAndToken , 获取测试用户的并获取其ID以及token
+func getTestUserIdAndToken(username string, password string, e *httpexpect.Expect) (int, string) {
+	registerResp := e.POST("/douyin/user/register/").
+		WithQuery("username", username).WithQuery("password", password).
+		WithFormField("username", username).WithFormField("password", password).
+		Expect().
+		Status(http.StatusOK).
+		JSON().Object()
+
+	userId := 0
+	token := registerResp.Value("token").String().Raw()
+
+	if len(token) == 0 {
+		loginResp := e.POST("/douyin/user/login/").
+			WithQuery("username", username).WithQuery("password", password).
+			WithFormField("username", username).WithFormField("password", password).
+			Expect().
+			Status(http.StatusOK).
+			JSON().Object()
+
+		loginToken := loginResp.Value("token").String()
+		loginToken.Length().Gt(0)
+		token = loginToken.Raw()
+
+		userId = int(loginResp.Value("user_id").Number().Raw())
+	} else {
+		userId = int(registerResp.Value("user_id").Number().Raw())
+	}
+	return userId, token
+}
