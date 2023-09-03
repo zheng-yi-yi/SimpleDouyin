@@ -10,14 +10,14 @@ import (
 
 var CommentService services.CommentService
 
-// CommentAction 处理评论操作的请求。
+// CommentAction 处理评论操作的请求
 func CommentAction(c *gin.Context) {
-	// 当前登录的用户
+	// 获取当前登录的用户id
 	userId := c.Value("userID").(uint)
 	// 评论所属的视频id
 	video_id, err := strconv.ParseInt(c.Query("video_id"), 10, 64)
 	if err != nil {
-		// 视频id参数类型转换失败
+		// 视频 id 参数类型转换失败
 		response.VideoIdConversionError(c)
 		return
 	}

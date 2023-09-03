@@ -9,16 +9,19 @@ import (
 )
 
 func main() {
-	Init()             // 初始化所有配置。
-	r := gin.Default() // 创建一个 HTTP 服务器的实例，并使用默认的配置选项进行初始化。
-	initRouter(r)      // 初始化路由规则并将这些规则添加到一个名为 r 的 Gin 路由引擎中。
-	r.Run()            // 启动 Gin 服务器，开始监听来自客户端的请求。
+	Init()             // 初始化所有配置
+	r := gin.Default() // 创建一个 HTTP 服务器的实例，并使用默认的配置选项进行初始化
+	initRouter(r)      // 初始化路由规则
+	r.Run()            // 监听客户端请求
 }
 
 func Init() {
-	setup.InitConfig()                         // 初始化 config.yaml 配置文件
-	config.GormConfig = setup.InitGormConfig() // 初始化 GORM 配置
-	config.Database = setup.InitGorm()         // 初始化数据库连接
+	// 初始化 config.yaml 配置文件
+	setup.InitConfig()
+	// 初始化 GORM 配置
+	config.GormConfig = setup.InitGormConfig()
+	// 初始化数据库连接
+	config.Database = setup.InitGorm()
 	if config.Database != nil {
 		if err := setup.CreateTable(config.Database); err != nil {
 			log.Printf("无法创建或更新表: %v", err)
