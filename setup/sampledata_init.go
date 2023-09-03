@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-const testUserPassword = "$2a$16$qOVr7vIeEZcah73BCpocV.Sq/m70sK4YusyEIU73TrvEj8YKzH7aK"
+const testUserPassword = "$2a$16$qOVr7vIeEZcah73BCpocV.Sq/m70sK4YusyEIU73TrvEj8YKzH7aK" // 样例数据，测试用户的密码均为：123456
 
 // ========== 用户表-样例数据 ==========
 
