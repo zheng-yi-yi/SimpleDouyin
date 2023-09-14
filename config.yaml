@@ -7,6 +7,6 @@ mysql:
   # 用户名（如 root）
   username: root
   # 密码
-  password: 182278
+  password: 
   # 数据库名称
   db_name: douyin
